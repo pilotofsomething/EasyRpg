@@ -14,7 +14,7 @@
     "issues": "https://github.com/pilotofsomething/EasyRpg/issues",
     "sources": "https://github.com/pilotofsomething/EasyRpg"
   },
-  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "license": "GNU General Public License version 3 (GPLv3)",
   "icon": "assets/easy_rpg/icon.png",
   "environment": "*",
   "entrypoints": {
