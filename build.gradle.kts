@@ -12,7 +12,27 @@ version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
 minecraft {}
-repositories {}
+repositories {
+    maven {
+        name = "CottonMC"
+        setUrl("https://server.bbkr.space/artifactory/libs-release")
+    }
+    maven {
+        name = "Ladysnake Mods"
+        setUrl("https://ladysnake.jfrog.io/artifactory/mods")
+    }
+    maven {
+        name = "TerraformersMC Maven"
+        setUrl("https://maven.terraformersmc.com/releases")
+    }
+    maven {
+        name = "JitPack"
+        setUrl("https://jitpack.io")
+    }
+    maven {
+        setUrl("https://maven.shedaniel.me/")
+    }
+}
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -22,8 +42,28 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+
+    val libGuiVersion: String by project
+    modImplementation("io.github.cottonmc:LibGui:$libGuiVersion")
+    include("io.github.cottonmc:LibGui:$libGuiVersion")
+
+    val cardinalComponentsVersion: String by project
+    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:$cardinalComponentsVersion")
+    include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:$cardinalComponentsVersion")
+
+    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:$cardinalComponentsVersion")
+    include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:$cardinalComponentsVersion")
+
+    val clothApiVersion: String by project
+    modApi("me.shedaniel.cloth:cloth-config-fabric:$clothApiVersion") {
+        exclude(group = "net.fabricmc.fabric-api")
+    }
+
+    val modmenuVersion: String by project
+    modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16

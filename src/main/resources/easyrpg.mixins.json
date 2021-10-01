@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "pilotofsomething.easyrpg.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "injectors": {
+	"defaultRequire": 1
+  },
+  "mixins": [
+	"ClampedEntityAttributeMixin",
+	"HungerManagerMixin",
+	"LivingEntityMixin",
+	"PlayerEntityMixin",
+	"StatusEffectMixin"
+  ],
+  "client": [
+	"DamageParticleFactoryMixin",
+	"InGameHudMixin"
+  ]
+}

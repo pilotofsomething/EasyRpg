@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "easyrpg",
+  "version": "$version",
+  "name": "Easy RPG",
+  "description": "Mod Description",
+  "authors": [
+    "pilotofsomething"
+  ],
+  "contributors": [
+    "Voidwolfs"
+  ],
+  "contact": {
+    "homepage": "",
+    "issues": "",
+    "sources": ""
+  },
+  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "icon": "assets/easy_rpg/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "pilotofsomething.easyrpg.EasyRpg"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "pilotofsomething.easyrpg.EasyRpg"
+      }
+    ],
+    "cardinal-components-entity": [
+	  "pilotofsomething.easyrpg.components.RpgPlayer::registerEntityComponentFactories",
+	  "pilotofsomething.easyrpg.components.RpgMob::registerEntityComponentFactories"
+    ],
+    "modmenu": [
+	  "pilotofsomething.easyrpg.ConfigScreen"
+    ]
+  },
+  "mixins": [
+    "easyrpg.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.7",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
+    "minecraft": "1.17.x",
+    "java": ">=16",
+    "cardinal-components-base": ">=3.0.0",
+    "cardinal-components-entity": ">=3.0.0",
+    "cloth-config2": ">=5.0.0"
+  },
+  "custom": {
+    "cardinal-components": [
+      "easy_rpg:player",
+      "easy_rpg:entity"
+    ]
+  }
+}
