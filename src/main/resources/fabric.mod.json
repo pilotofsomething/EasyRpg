@@ -11,9 +11,8 @@
     "Voidwolfs"
   ],
   "contact": {
-    "homepage": "",
-    "issues": "",
-    "sources": ""
+    "issues": "https://github.com/pilotofsomething/EasyRpg/issues",
+    "sources": "https://github.com/pilotofsomething/EasyRpg"
   },
   "license": "GNU Lesser General Public License version 3 (LGPLv3)",
   "icon": "assets/easy_rpg/icon.png",
