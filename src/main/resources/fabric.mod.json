@@ -3,7 +3,7 @@
   "id": "easyrpg",
   "version": "$version",
   "name": "Easy RPG",
-  "description": "Mod Description",
+  "description": "Adds basic RPG mechanics to Minecraft.",
   "authors": [
     "pilotofsomething"
   ],
