@@ -219,13 +219,13 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		intInst!!.baseValue = baseInt.toDouble()
 		defInst!!.baseValue = baseDef.toDouble()
 
-		checkAttributeModifiers(maxHealthInst!!, IRpgEntity.HEALTH_MODIFIER, "Simple RPG Health", health.toDouble())
-		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Simple RPG Base Toughness", config.players.toughness.base)
-		checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Simple RPG Toughness", min(config.players.toughness.gain * (level - 1), config.players.toughness.cap))
-		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Simple RPG Strength", strength.toDouble())
-		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Simple RPG Dexterity", dexterity.toDouble())
-		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Simple RPG Intelligence", intelligence.toDouble())
-		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Simple RPG Max Defence", defense.toDouble())
+		checkAttributeModifiers(maxHealthInst!!, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", health.toDouble())
+		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.players.toughness.base)
+		checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(config.players.toughness.gain * (level - 1), config.players.toughness.cap))
+		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", strength.toDouble())
+		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", dexterity.toDouble())
+		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Easy RPG Intelligence", intelligence.toDouble())
+		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Max Defence", defense.toDouble())
 		
 		if(syncFlags != 0) {
 			RPG_PLAYER.sync(player)

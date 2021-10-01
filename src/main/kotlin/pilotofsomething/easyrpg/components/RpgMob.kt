@@ -132,13 +132,13 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 			val healthMult = maxHealthInst!!.baseValue / 20.0
 
-			checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Simple RPG Health", getHealth(healthMult))
-			checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Simple RPG Base Toughness", 1.0)
-			checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Simple RPG Toughness", 1.8 * (level - 1))
-			checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Simple RPG Strength", getStr().toDouble())
-			checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Simple RPG Dexterity", getDex().toDouble())
-			checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Simple RPG Intelligence", getInt().toDouble())
-			checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Simple RPG Defense", getDef().toDouble())
+			checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
+			checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base)
+			checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(config.entities.toughness.gain * (level - 1), config.entities.toughness.cap))
+			checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
+			checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
+			checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "easy RPG Intelligence", getInt().toDouble())
+			checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
 			entity.health = entity.maxHealth
 		}
 
@@ -158,13 +158,13 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 		val healthMult = maxHealthInst!!.baseValue / 20.0
 
-		checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Simple RPG Health", getHealth(healthMult))
-		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Simple RPG Base Toughness", config.entities.toughness.base)
-		checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Simple RPG Toughness", min(config.entities.toughness.gain * (level - 1), config.entities.toughness.cap))
-		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Simple RPG Strength", getStr().toDouble())
-		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Simple RPG Dexterity", getDex().toDouble())
-		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Simple RPG Intelligence", getInt().toDouble())
-		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Simple RPG Defense", getDef().toDouble())
+		checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
+		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base)
+		checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(config.entities.toughness.gain * (level - 1), config.entities.toughness.cap))
+		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
+		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
+		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "easy RPG Intelligence", getInt().toDouble())
+		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
 
 		entity.health += entity.maxHealth - oldHealth
 	}
