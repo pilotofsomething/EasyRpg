@@ -54,7 +54,6 @@ interface IRpgPlayer : IRpgEntity, Component, ServerTickingComponent, AutoSynced
 		@Environment(EnvType.SERVER) set
 
 	fun getStat(stat: Stats): Int
-	fun getBaseStat(stat: Stats): Int
 	fun addPoints(stat: Stats, amt: Int)
 	fun getPoints(stat: Stats): Int
 	fun addXP(amt: Long)
@@ -132,16 +131,6 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		return if(lvl > 0) {
 			(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
 		} else 0
-	}
-
-	override fun getBaseStat(stat: IRpgPlayer.Stats): Int {
-		return when(stat) {
-			IRpgPlayer.Stats.HEALTH -> baseHealth
-			IRpgPlayer.Stats.STRENGTH -> baseStr
-			IRpgPlayer.Stats.DEXTERITY -> baseDex
-			IRpgPlayer.Stats.INTELLIGENCE -> baseInt
-			IRpgPlayer.Stats.DEFENSE -> baseDef
-		}
 	}
 
 	override fun getStat(stat: IRpgPlayer.Stats): Int {
