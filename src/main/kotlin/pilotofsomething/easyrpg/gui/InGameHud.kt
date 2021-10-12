@@ -37,14 +37,16 @@ object CustomInGameHud : DrawableHelper() {
 		fill(matrices, x, y, (x + (110 * percent1)).toInt(), y + 9, colorAtOpacity(0xDF0000, 1.0f))
 
 		val tr = MinecraftClient.getInstance().textRenderer
-		if (absorption > 0) {
+		if(absorption > 0) {
 			tr.draw(matrices, String.format("%,.0f (+%,.0f)", health, absorption), x + 1f, y + 1f, 0xFFFFFF)
 		} else tr.draw(matrices, String.format("%,.0f", health), x + 1f, y + 1f, 0xFFFFFF)
 	}
 
 
 	fun renderStatusBars(matrices: MatrixStack, player: PlayerEntity, scaledWidth: Int, scaledHeight: Int) {
-		renderHealthBar(matrices, scaledWidth / 2 - 91, scaledHeight - 39, player.maxHealth, player.health, player.absorptionAmount)
+		renderHealthBar(
+			matrices, scaledWidth / 2 - 91, scaledHeight - 39, player.maxHealth, player.health, player.absorptionAmount
+		)
 
 		matrices.push()
 
@@ -56,9 +58,13 @@ object CustomInGameHud : DrawableHelper() {
 		val hungerPercent = 1 - hunger.foodLevel / 20f
 
 		fill(matrices, hungerX, hungerY, hungerX + 71, hungerY + 9, colorAtOpacity(0x1F0F00, 1.0f))
-		val foodColor = if(hunger.saturationLevel > 0) colorAtOpacity(0x6F2F00, 1.0F) else colorAtOpacity(0x5F1F00, 1.0f)
+		val foodColor =
+			if(hunger.saturationLevel > 0) colorAtOpacity(0x6F2F00, 1.0F) else colorAtOpacity(0x5F1F00, 1.0f)
 		fill(matrices, hungerX + (71 * hungerPercent).toInt(), hungerY, hungerX + 71, hungerY + 9, foodColor)
-		textRenderer.draw(matrices, String.format("%d", hunger.foodLevel), hungerX + 71f - textRenderer.getWidth(String.format("%d", hunger.foodLevel)), hungerY + 1f, 0xFFFFFF)
+		textRenderer.draw(
+			matrices, String.format("%d", hunger.foodLevel),
+			hungerX + 71f - textRenderer.getWidth(String.format("%d", hunger.foodLevel)), hungerY + 1f, 0xFFFFFF
+		)
 
 		val enchExpX = scaledWidth / 2 + 1
 		val expY = hungerY + 10
@@ -66,9 +72,15 @@ object CustomInGameHud : DrawableHelper() {
 		val plrExpX = scaledWidth / 2 - 91
 
 		fill(matrices, enchExpX, expY, enchExpX + 90, expY + 5, colorAtOpacity(0x101F04, 1.0f))
-		fill(matrices, enchExpX + ((1 - player.experienceProgress) * 90).toInt(), expY, enchExpX + 90, expY + 5, colorAtOpacity(0x608F18, 1.0f))
+		fill(
+			matrices, enchExpX + ((1 - player.experienceProgress) * 90).toInt(), expY, enchExpX + 90, expY + 5,
+			colorAtOpacity(0x608F18, 1.0f)
+		)
 		if(player.experienceLevel > 0) {
-			textRenderer.draw(matrices, player.experienceLevel.toString(), enchExpX + 90f - textRenderer.getWidth(player.experienceLevel.toString()), expY - 1f, 0xFFFFFF)
+			textRenderer.draw(
+				matrices, player.experienceLevel.toString(),
+				enchExpX + 90f - textRenderer.getWidth(player.experienceLevel.toString()), expY - 1f, 0xFFFFFF
+			)
 		}
 
 		val rpg = RPG_PLAYER.get(player)
@@ -88,8 +100,12 @@ object CustomInGameHud : DrawableHelper() {
 			val percent2 = mountHealthTracker.prevHealthDisplay / mounted.maxHealth
 
 			fill(matrices, mountX, mountY, mountX + 182, mountY + 9, colorAtOpacity(0x1F0000, 1.0f))
-			fill(matrices, mountX, mountY, mountX + (182 * percent2).toInt(), mountY + 9, colorAtOpacity(0xFF4F4F, 1.0f))
-			fill(matrices, mountX, mountY, mountX + (182 * percent1).toInt(), mountY + 9, colorAtOpacity(0xDF0000, 1.0f))
+			fill(
+				matrices, mountX, mountY, mountX + (182 * percent2).toInt(), mountY + 9, colorAtOpacity(0xFF4F4F, 1.0f)
+			)
+			fill(
+				matrices, mountX, mountY, mountX + (182 * percent1).toInt(), mountY + 9, colorAtOpacity(0xDF0000, 1.0f)
+			)
 			textRenderer.draw(matrices, String.format("%,.0f", mounted.health), mountX + 1f, mountY + 1f, 0xFFFFFF)
 
 			matrices.translate(0.0, -10.0, 0.0)
@@ -105,7 +121,9 @@ object CustomInGameHud : DrawableHelper() {
 				fill(matrices, jumpX, jumpY, jumpX + 161, jumpY + 3, colorAtOpacity(0x2E2337, 1.0f))
 				fill(matrices, jumpX + 161, jumpY, jumpX + 182, jumpY + 3, colorAtOpacity(0x2C351F, 1.0f))
 				fill(matrices, jumpX, jumpY, jumpX + bar1.toInt(), jumpY + 3, colorAtOpacity(0x678DD9, 1.0f))
-				fill(matrices, jumpX + 161, jumpY, jumpX + 161 + bar2.toInt(), jumpY + 3, colorAtOpacity(0xD09248, 1.0f))
+				fill(
+					matrices, jumpX + 161, jumpY, jumpX + 161 + bar2.toInt(), jumpY + 3, colorAtOpacity(0xD09248, 1.0f)
+				)
 
 				matrices.translate(0.0, -4.0, 0.0)
 			}
@@ -118,7 +136,10 @@ object CustomInGameHud : DrawableHelper() {
 			val breathX = scaledWidth / 2 - 91
 			val percent = max(player.air, 0) / player.maxAir.toFloat()
 			fill(matrices, breathX, breathY, breathX + 182, breathY + 3, colorAtOpacity(0x00001F, 1.0f))
-			fill(matrices, breathX, breathY, breathX + (182 * percent).toInt(), breathY + 3, colorAtOpacity(0x0000DF, 1.0f))
+			fill(
+				matrices, breathX, breathY, breathX + (182 * percent).toInt(), breathY + 3,
+				colorAtOpacity(0x0000DF, 1.0f)
+			)
 			matrices.translate(0.0, -4.0, 0.0)
 		}
 
@@ -155,7 +176,7 @@ object CustomInGameHud : DrawableHelper() {
 		private var time = 0L
 
 		fun update(value: Float, max: Float) {
-			if (Util.getMeasuringTimeNano() - time > 5000000) { // Cap animation frame rate at 200 fps
+			if(Util.getMeasuringTimeNano() - time > 5000000) { // Cap animation frame rate at 200 fps
 				if(prevHealthDisplay > max) {
 					resetHealth(value)
 					prevHealth = value

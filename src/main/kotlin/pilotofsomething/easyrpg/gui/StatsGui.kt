@@ -34,24 +34,32 @@ class StatsGui : LightweightGuiDescription() {
 		val level = WDynamicLabel { I18n.translate("easyrpg.gui.level", rpg.level) }
 		root.add(level, 4, 4)
 
-		val levelXp = WDynamicLabel { if(rpg.level < config.players.maxLevel) {
-			String.format("%,d/%,d", rpg.xpForLevel, rpg.xpReqForLevel)
-		} else I18n.translate("easyrpg.gui.max_level") }
+		val levelXp = WDynamicLabel {
+			if(rpg.level < config.players.maxLevel) {
+				String.format("%,d/%,d", rpg.xpForLevel, rpg.xpReqForLevel)
+			} else I18n.translate("easyrpg.gui.max_level")
+		}
 		levelXp.setAlignment(HorizontalAlignment.RIGHT)
 		root.add(levelXp, 243, 4)
 
-		val xpBar = WDynamicBar(null as Texture?, null, { if(rpg.xpReqForLevel > 0) rpg.xpForLevel / rpg.xpReqForLevel.toFloat() else 1.0f }, WDynamicBar.Direction.RIGHT)
+		val xpBar = WDynamicBar(
+			null as Texture?, null,
+			{ if(rpg.xpReqForLevel > 0) rpg.xpForLevel / rpg.xpReqForLevel.toFloat() else 1.0f },
+			WDynamicBar.Direction.RIGHT
+		)
 		xpBar.setBarColor(0xB6FF00)
 		xpBar.setBarOpacity(0.67f)
 		xpBar.setBarBackgroundOpacity(0.33f)
 		root.add(xpBar, 4, 14, 256, 4)
 
-		val playerStats = WListPanel(IRpgPlayer.Stats.values().toList(), { WPlainPanel() }) { stat: IRpgPlayer.Stats, p: WPlainPanel ->
+		val playerStats = WListPanel(
+			IRpgPlayer.Stats.values().toList(), { WPlainPanel() }) { stat: IRpgPlayer.Stats, p: WPlainPanel ->
 			p.setSize(248, 18)
 			val name = WLabel(I18n.translate(stat.statName))
 			name.horizontalAlignment = HorizontalAlignment.CENTER
 			p.add(name, p.width / 2, 0)
-			val label = WDynamicLabel { String.format("%,d", mc.player?.getAttributeValue(stat.attribute)?.toInt() ?: 0) }
+			val label =
+				WDynamicLabel { String.format("%,d", mc.player?.getAttributeValue(stat.attribute)?.toInt() ?: 0) }
 			label.setAlignment(HorizontalAlignment.CENTER)
 			p.add(label, p.width / 2, 10)
 		}
@@ -61,13 +69,15 @@ class StatsGui : LightweightGuiDescription() {
 		val spLabel = WLabel(I18n.translate("easyrpg.gui.stat_points"))
 		spLabel.horizontalAlignment = HorizontalAlignment.CENTER
 		root.add(spLabel, 132, 120)
-		val spLabelC = WDynamicLabel { String.format("%,d/%,d", rpg.remainingSP, (rpg.level * config.players.spGain).toInt()) }
+		val spLabelC =
+			WDynamicLabel { String.format("%,d/%,d", rpg.remainingSP, (rpg.level * config.players.spGain).toInt()) }
 		spLabelC.setAlignment(HorizontalAlignment.CENTER)
 		root.add(spLabelC, 132, 130)
 
-		val statList = WListPanel(IRpgPlayer.Stats.values().toList(), { StatPanel() }) { stat: IRpgPlayer.Stats, p: StatPanel ->
-			p.configure(stat, rpg)
-		}
+		val statList =
+			WListPanel(IRpgPlayer.Stats.values().toList(), { StatPanel() }) { stat: IRpgPlayer.Stats, p: StatPanel ->
+				p.configure(stat, rpg)
+			}
 		statList.setListItemHeight(18)
 		root.add(statList, 4, 140, 256, 92)
 	}
@@ -75,6 +85,7 @@ class StatsGui : LightweightGuiDescription() {
 
 class StatPanel : WPlainPanel() {
 	private val label = WLabel("")
+
 	init {
 		setSize(248, 18)
 		label.horizontalAlignment = HorizontalAlignment.CENTER
@@ -91,8 +102,16 @@ class StatPanel : WPlainPanel() {
 		subButton.onClick = Runnable {
 			val buf = PacketByteBufs.create()
 			buf.writeVarInt(stat.ordinal)
-			buf.writeVarInt(-1 * (if(InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_SHIFT)) 10 else 1)
-					* (if(InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_CONTROL)) 100 else 1))
+			buf.writeVarInt(
+				-1 * (if(InputUtil.isKeyPressed(
+						MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_SHIFT
+					)
+				) 10 else 1)
+						* (if(InputUtil.isKeyPressed(
+						MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_CONTROL
+					)
+				) 100 else 1)
+			)
 			ClientPlayNetworking.send(ADD_STAT_ID, buf)
 		}
 		add(subButton, 6, 0)
@@ -101,8 +120,16 @@ class StatPanel : WPlainPanel() {
 		addButton.onClick = Runnable {
 			val buf = PacketByteBufs.create()
 			buf.writeVarInt(stat.ordinal)
-			buf.writeVarInt(1 * (if(InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_SHIFT)) 10 else 1)
-					* (if(InputUtil.isKeyPressed(MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_CONTROL)) 100 else 1))
+			buf.writeVarInt(
+				1 * (if(InputUtil.isKeyPressed(
+						MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_SHIFT
+					)
+				) 10 else 1)
+						* (if(InputUtil.isKeyPressed(
+						MinecraftClient.getInstance().window.handle, InputUtil.GLFW_KEY_LEFT_CONTROL
+					)
+				) 100 else 1)
+			)
 			ClientPlayNetworking.send(ADD_STAT_ID, buf)
 		}
 		add(addButton, width - 24, 0)

@@ -21,7 +21,7 @@ public class HungerManagerMixin {
 			from = @At(value = "FIELD", target = "Lnet/minecraft/world/Difficulty;HARD:Lnet/minecraft/world/Difficulty;", opcode = Opcodes.GETSTATIC),
 			to = @At(value = "FIELD", target = "Lnet/minecraft/world/Difficulty;NORMAL:Lnet/minecraft/world/Difficulty;", opcode = Opcodes.GETSTATIC)))
 	private float updateStarveNormal(float v, PlayerEntity player) {
-		return (float)Math.max(Math.floor(player.getMaxHealth() * 0.075), 1.0);
+		return (float) Math.max(Math.floor(player.getMaxHealth() * 0.075), 1.0);
 	}
 
 }

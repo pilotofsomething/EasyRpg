@@ -13,7 +13,7 @@ public class ClampedEntityAttributeMixin {
 
 	@ModifyArg(method = "clamp(D)D", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(DDD)D"), index = 2)
 	private double injectClamp(double value) {
-		if((Object)this == EntityAttributes.GENERIC_MAX_HEALTH || (Object)this == EntityAttributes.GENERIC_ARMOR_TOUGHNESS) {
+		if((Object) this == EntityAttributes.GENERIC_MAX_HEALTH || (Object) this == EntityAttributes.GENERIC_ARMOR_TOUGHNESS) {
 			return Integer.MAX_VALUE;
 		}
 		return value;
@@ -21,8 +21,8 @@ public class ClampedEntityAttributeMixin {
 
 	@Inject(method = "getMaxValue()D", at = @At("HEAD"), cancellable = true)
 	private void getMaxValue(CallbackInfoReturnable<Double> cir) {
-		if((Object)this == EntityAttributes.GENERIC_MAX_HEALTH || (Object)this == EntityAttributes.GENERIC_ARMOR_TOUGHNESS) {
-			cir.setReturnValue((double)Integer.MAX_VALUE);
+		if((Object) this == EntityAttributes.GENERIC_MAX_HEALTH || (Object) this == EntityAttributes.GENERIC_ARMOR_TOUGHNESS) {
+			cir.setReturnValue((double) Integer.MAX_VALUE);
 		}
 	}
 

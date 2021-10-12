@@ -123,14 +123,23 @@ class ModConfig : ConfigData {
 
 			@ConfigEntry.Gui.Excluded
 			var dimensionSettings = hashMapOf(
-				"minecraft:overworld" to arrayListOf(ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)),
-				"minecraft:the_nether" to arrayListOf(ScaleSettingOperation(ScaleSettingOperation.Operation.MULTIPLY_DISTANCE, 8.0), ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)),
-				"minecraft:the_end" to arrayListOf(ScaleSettingOperation(ScaleSettingOperation.Operation.ADD, 75.0), ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 75.0))
+				"minecraft:overworld" to arrayListOf(
+					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
+				),
+				"minecraft:the_nether" to arrayListOf(
+					ScaleSettingOperation(ScaleSettingOperation.Operation.MULTIPLY_DISTANCE, 8.0),
+					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
+				),
+				"minecraft:the_end" to arrayListOf(
+					ScaleSettingOperation(ScaleSettingOperation.Operation.ADD, 75.0),
+					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 75.0)
+				)
 			)
 
 			class TimeSettings {
 				@ConfigEntry.Gui.Tooltip
 				var linear = 120000L
+
 				@ConfigEntry.Gui.Tooltip
 				var multiplier = 480000L
 			}
@@ -184,6 +193,7 @@ class ModConfig : ConfigData {
 
 class ScaleSettingOperation(var operation: Operation, var value: Double) {
 	constructor() : this(Operation.ADD, 0.0)
+
 	enum class Operation {
 		ADD,
 		MULTIPLY_DISTANCE,

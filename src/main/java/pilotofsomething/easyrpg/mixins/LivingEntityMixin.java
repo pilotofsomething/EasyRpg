@@ -39,21 +39,21 @@ public class LivingEntityMixin {
 			}
 
 			double defense = getAttributeValue(SimpleRpgAttributes.INSTANCE.getDEFENSE());
-			if (source.isMagic()) {
+			if(source.isMagic()) {
 				double intelligence = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getINTELLIGENCE());
-				return damage * (float)(intelligence / defense);
-			} else if (source.isProjectile()) {
+				return damage * (float) (intelligence / defense);
+			} else if(source.isProjectile()) {
 				double dexterity = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getDEXTERITY());
-				return damage * (float)(dexterity / defense);
+				return damage * (float) (dexterity / defense);
 			} else {
 				double strength = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getSTRENGTH());
-				return damage * (float)(strength / defense);
+				return damage * (float) (strength / defense);
 			}
 		}
 
 		float healthScaling =
-				(float)Math.max((1 + (getMaxHealth() - getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)) *
-						((Object)this instanceof PlayerEntity ? ConfigKt.config.getPlayers().getDamageScalingRatio()
+				(float) Math.max((1 + (getMaxHealth() - getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)) *
+						((Object) this instanceof PlayerEntity ? ConfigKt.config.getPlayers().getDamageScalingRatio()
 								: ConfigKt.config.getEntities().getDamageScalingRatio()) / getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)), 1.0);
 		return amount * healthScaling;
 	}
@@ -61,8 +61,8 @@ public class LivingEntityMixin {
 	@ModifyVariable(method = "heal(F)V", at = @At("HEAD"), argsOnly = true)
 	private float heal(float amount) {
 		float healthScaling =
-				(float)Math.max((1 + (getMaxHealth() - getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)) *
-						((Object)this instanceof PlayerEntity ? ConfigKt.config.getPlayers().getHealScalingRatio()
+				(float) Math.max((1 + (getMaxHealth() - getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)) *
+						((Object) this instanceof PlayerEntity ? ConfigKt.config.getPlayers().getHealScalingRatio()
 								: ConfigKt.config.getEntities().getHealScalingRatio()) / getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH)), 1.0);
 		return amount * healthScaling;
 	}
@@ -77,12 +77,18 @@ public class LivingEntityMixin {
 	}
 
 	@Shadow
-	public float getMaxHealth() { return 0f; }
+	public float getMaxHealth() {
+		return 0f;
+	}
 
 	@Shadow
-	public double getAttributeValue(EntityAttribute attribute) { return 0.0; }
+	public double getAttributeValue(EntityAttribute attribute) {
+		return 0.0;
+	}
 
 	@Shadow
-	public double getAttributeBaseValue(EntityAttribute attribute) { return 0.0; }
+	public double getAttributeBaseValue(EntityAttribute attribute) {
+		return 0.0;
+	}
 
 }

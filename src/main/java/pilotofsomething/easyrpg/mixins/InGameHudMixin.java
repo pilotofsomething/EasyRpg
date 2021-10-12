@@ -47,7 +47,9 @@ public class InGameHudMixin {
 	}
 
 	@Shadow
-	private PlayerEntity getCameraPlayer() { return null; }
+	private PlayerEntity getCameraPlayer() {
+		return null;
+	}
 
 	@Shadow
 	private int scaledWidth;

@@ -11,7 +11,7 @@ public class StatusEffectMixin {
 
 	@ModifyConstant(method = "applyUpdateEffect(Lnet/minecraft/entity/LivingEntity;I)V", constant = @Constant(floatValue = 1.0f, ordinal = 1))
 	private float applyUpdateEffect(float value, LivingEntity entity, int amplifier) {
-		return (float)Math.max(Math.floor(entity.getMaxHealth() * 0.075f), 1.0);
+		return (float) Math.max(Math.floor(entity.getMaxHealth() * 0.075f), 1.0);
 	}
 
 }

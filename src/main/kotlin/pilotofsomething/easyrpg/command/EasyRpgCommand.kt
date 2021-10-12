@@ -18,32 +18,86 @@ import pilotofsomething.easyrpg.config
 object EasyRpgCommand {
 
 	fun register(dispatcher: CommandDispatcher<ServerCommandSource>) {
-		dispatcher.register(literal("easyrpg")
-			.then(literal("stats").executes { context ->
-				displayStats(context.source, context.source.player)
-			}
-				.then(argument("player", EntityArgumentType.player()).executes { context ->
-					displayStats(context.source, EntityArgumentType.getPlayer(context, "player"))
-			})).then(literal("set").requires { source -> source.hasPermissionLevel(2) }.then(literal("level").then(argument("value", IntegerArgumentType.integer(1, config.players.maxLevel)).executes { context ->
-				setLevel(context.source, context.source.player, IntegerArgumentType.getInteger(context, "value"))
-			}.then(argument("player", EntityArgumentType.player()).executes { context ->
-					setLevel(context.source, EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "value"))
-				}))
-			).then(literal("xp").then(argument("value", LongArgumentType.longArg(0)).executes { context ->
-				setXp(context.source, context.source.player, LongArgumentType.getLong(context, "value"))
-			}.then(argument("player", EntityArgumentType.player()).executes { context ->
-					setXp(context.source, EntityArgumentType.getPlayer(context, "player"), LongArgumentType.getLong(context, "value"))
-				}))))
-			.then(literal("add").requires { source -> source.hasPermissionLevel(2) }.then(literal("level").then(argument("amount", IntegerArgumentType.integer(1)).executes { context ->
-				addLevel(context.source, context.source.player, IntegerArgumentType.getInteger(context, "amount"))
-			}.then(argument("player", EntityArgumentType.player()).executes { context ->
-					addLevel(context.source, EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "amount"))
-				}))
-			).then(literal("xp").then(argument("amount", LongArgumentType.longArg(0)).executes { context ->
-				addXp(context.source, context.source.player, LongArgumentType.getLong(context, "amount"))
-			}.then(argument("player", EntityArgumentType.player()).executes { context ->
-					addXp(context.source, EntityArgumentType.getPlayer(context, "player"), LongArgumentType.getLong(context, "amount"))
-			})))))
+		dispatcher.register(
+			literal("easyrpg").then(
+				literal("stats").executes { context -> displayStats(context.source, context.source.player) }.then(
+					argument("player", EntityArgumentType.player()).executes { context ->
+						displayStats(
+							context.source, EntityArgumentType.getPlayer(
+								context, "player"
+							)
+						)
+					})
+			).then(
+				literal("set").requires { source -> source.hasPermissionLevel(2) }.then(
+					literal("level").then(
+						argument(
+							"value", IntegerArgumentType.integer(1, config.players.maxLevel)
+						).executes { context ->
+							setLevel(
+								context.source, context.source.player, IntegerArgumentType.getInteger(context, "value")
+							)
+						}.then(
+							argument("player", EntityArgumentType.player()).executes { context ->
+								setLevel(
+									context.source, EntityArgumentType.getPlayer(context, "player"),
+									IntegerArgumentType.getInteger(context, "value")
+								)
+							})
+					)
+				).then(
+					literal("xp").then(
+						argument("value", LongArgumentType.longArg(0)).executes { context ->
+							setXp(
+								context.source, context.source.player, LongArgumentType.getLong(context, "value")
+							)
+						}.then(
+							argument("player", EntityArgumentType.player()).executes { context ->
+								setXp(
+									context.source, EntityArgumentType.getPlayer(
+										context, "player"
+									), LongArgumentType.getLong(
+										context, "value"
+									)
+								)
+							})
+					)
+				)
+			).then(
+				literal("add").requires { source -> source.hasPermissionLevel(2) }.then(
+					literal("level").then(
+						argument("amount", IntegerArgumentType.integer(1)).executes { context ->
+							addLevel(
+								context.source, context.source.player, IntegerArgumentType.getInteger(context, "amount")
+							)
+						}.then(
+							argument("player", EntityArgumentType.player()).executes { context ->
+								addLevel(
+									context.source, EntityArgumentType.getPlayer(context, "player"),
+									IntegerArgumentType.getInteger(context, "amount")
+								)
+							})
+					)
+				).then(
+					literal("xp").then(
+						argument("amount", LongArgumentType.longArg(0)).executes { context ->
+							addXp(
+								context.source, context.source.player, LongArgumentType.getLong(context, "amount")
+							)
+						}.then(
+							argument("player", EntityArgumentType.player()).executes { context ->
+								addXp(
+									context.source, EntityArgumentType.getPlayer(
+										context, "player"
+									), LongArgumentType.getLong(
+										context, "amount"
+									)
+								)
+							})
+					)
+				)
+			)
+		)
 	}
 
 	private fun displayStats(source: ServerCommandSource, player: PlayerEntity?): Int {
@@ -60,15 +114,29 @@ object EasyRpgCommand {
 		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.level", rpg.level)), false)
 		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.total_xp", rpg.xp)), false)
 		if(rpg.level < config.players.maxLevel) {
-			source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.xp_level", rpg.xpForLevel, rpg.xpReqForLevel)), false)
-			source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl", rpg.xpReqForLevel - rpg.xpForLevel)), false)
+			source.sendFeedback(
+				Text.of(I18n.translate("easyrpg.command.player.stats.xp_level", rpg.xpForLevel, rpg.xpReqForLevel)),
+				false
+			)
+			source.sendFeedback(
+				Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl", rpg.xpReqForLevel - rpg.xpForLevel)),
+				false
+			)
 		} else {
-			source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.xp_level.max", rpg.xpForLevel, rpg.xpReqForLevel)), false)
-			source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl.max", rpg.xpReqForLevel - rpg.xpForLevel)), false)
+			source.sendFeedback(
+				Text.of(I18n.translate("easyrpg.command.player.stats.xp_level.max", rpg.xpForLevel, rpg.xpReqForLevel)),
+				false
+			)
+			source.sendFeedback(
+				Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl.max", rpg.xpReqForLevel - rpg.xpForLevel)),
+				false
+			)
 		}
 
 		for(stat in IRpgPlayer.Stats.values()) {
-			source.sendFeedback(Text.of("  ${I18n.translate(stat.statName)}: ${String.format("%,d", rpg.getStat(stat))}"), false)
+			source.sendFeedback(
+				Text.of("  ${I18n.translate(stat.statName)}: ${String.format("%,d", rpg.getStat(stat))}"), false
+			)
 		}
 
 		return 1
@@ -82,7 +150,9 @@ object EasyRpgCommand {
 		val rpg = RPG_PLAYER.get(player)
 		rpg.level = level - 1
 		rpg.xp = rpg.xpReqTotal
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.set_level", player.name.asString(), level)), true)
+		source.sendFeedback(
+			Text.of(I18n.translate("easyrpg.command.player.set_level", player.name.asString(), level)), true
+		)
 		return 1
 	}
 
@@ -106,7 +176,9 @@ object EasyRpgCommand {
 		val rpg = RPG_PLAYER.get(player)
 		rpg.level += amount - 1
 		rpg.xp = rpg.xpReqTotal
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.add_level", player.name.asString(), amount)), true)
+		source.sendFeedback(
+			Text.of(I18n.translate("easyrpg.command.player.add_level", player.name.asString(), amount)), true
+		)
 		return 1
 	}
 
@@ -117,7 +189,9 @@ object EasyRpgCommand {
 		}
 		val rpg = RPG_PLAYER.get(player)
 		rpg.addXP(amount)
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.add_xp", player.name.asString(), amount)), true)
+		source.sendFeedback(
+			Text.of(I18n.translate("easyrpg.command.player.add_xp", player.name.asString(), amount)), true
+		)
 		return 1
 	}
 

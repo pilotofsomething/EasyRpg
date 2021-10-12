@@ -26,7 +26,8 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.pow
 
-val RPG_PLAYER: ComponentKey<IRpgPlayer> = ComponentRegistry.getOrCreate(Identifier("easy_rpg", "player"), IRpgPlayer::class.java)
+val RPG_PLAYER: ComponentKey<IRpgPlayer> =
+	ComponentRegistry.getOrCreate(Identifier("easy_rpg", "player"), IRpgPlayer::class.java)
 
 interface IRpgEntity {
 	var level: Int
@@ -69,9 +70,13 @@ interface IRpgPlayer : IRpgEntity, Component, ServerTickingComponent, AutoSynced
 
 class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 	override var level = 1
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_LEVEL }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_LEVEL
+		}
 	override var xp = 0L
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_XP }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_XP
+		}
 
 	@Environment(EnvType.SERVER)
 	override var timer = 0L // Used for scaling modes that scale over time
@@ -89,16 +94,28 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		get() = (level * config.players.spGain).toInt() - (spStr + spDex + spInt + spDef + spHealth)
 
 	private val health
-		get() = min(baseHealth + (spHealth * config.players.healthOptions.spGain).toInt(), config.players.healthOptions.cap)
+		get() = min(
+			baseHealth + (spHealth * config.players.healthOptions.spGain).toInt(),
+			config.players.healthOptions.cap
+		)
 
 	private val strength
-		get() = min(baseStr + (spStr * config.players.strengthOptions.spGain).toInt(), config.players.strengthOptions.cap)
+		get() = min(
+			baseStr + (spStr * config.players.strengthOptions.spGain).toInt(),
+			config.players.strengthOptions.cap
+		)
 
 	private val dexterity
-		get() = min(baseDex + (spDex * config.players.dexterityOptions.spGain).toInt(), config.players.dexterityOptions.cap)
+		get() = min(
+			baseDex + (spDex * config.players.dexterityOptions.spGain).toInt(),
+			config.players.dexterityOptions.cap
+		)
 
 	private val intelligence
-		get() = min(baseInt + (spInt * config.players.intelligenceOptions.spGain).toInt(), config.players.intelligenceOptions.cap)
+		get() = min(
+			baseInt + (spInt * config.players.intelligenceOptions.spGain).toInt(),
+			config.players.intelligenceOptions.cap
+		)
 
 	private val defense
 		get() = min(baseDef + (spDef * config.players.defenseOptions.spGain).toInt(), config.players.defenseOptions.cap)
@@ -115,15 +132,25 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		get() = config.players.defenseOptions.base + (config.players.defenseOptions.gain * (level - 1)).toInt()
 
 	private var spHealth = 0
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_HEALTH }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_HEALTH
+		}
 	private var spStr = 0
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_STR }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_STR
+		}
 	private var spDex = 0
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_DEX }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_DEX
+		}
 	private var spInt = 0
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_INT }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_INT
+		}
 	private var spDef = 0
-		set(value) { field = value; syncFlags = syncFlags or SyncFlags.SYNC_DEF }
+		set(value) {
+			field = value; syncFlags = syncFlags or SyncFlags.SYNC_DEF
+		}
 
 	private var syncFlags = -1
 
@@ -191,8 +218,9 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 			++level
 		}
 
-		if (config.entities.scaleMode == ScalingMode.TIME || config.entities.scaleMode == ScalingMode.LEVEL_TIME ||
-			config.entities.scaleMode == ScalingMode.DISTANCE_TIME || config.entities.scaleMode == ScalingMode.LEVEL_DISTANCE_TIME) {
+		if(config.entities.scaleMode == ScalingMode.TIME || config.entities.scaleMode == ScalingMode.LEVEL_TIME ||
+			config.entities.scaleMode == ScalingMode.DISTANCE_TIME || config.entities.scaleMode == ScalingMode.LEVEL_DISTANCE_TIME
+		) {
 			++timer
 		}
 
@@ -209,13 +237,25 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		defInst!!.baseValue = baseDef.toDouble()
 
 		checkAttributeModifiers(maxHealthInst!!, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", health.toDouble())
-		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.players.toughness.base)
-		checkAttributeModifiersMultiplier(toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(config.players.toughness.gain * (level - 1), config.players.toughness.cap))
+		checkAttributeModifiers(
+			toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness",
+			config.players.toughness.base
+		)
+		checkAttributeModifiersMultiplier(
+			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
+			min(
+				config.players.toughness.gain * (level - 1),
+				config.players.toughness.cap
+			)
+		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", strength.toDouble())
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", dexterity.toDouble())
-		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Easy RPG Intelligence", intelligence.toDouble())
+		checkAttributeModifiers(
+			intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Easy RPG Intelligence",
+			intelligence.toDouble()
+		)
 		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Max Defence", defense.toDouble())
-		
+
 		if(syncFlags != 0) {
 			RPG_PLAYER.sync(player)
 			syncFlags = 0
@@ -228,28 +268,47 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 			if(modifier.value != value - instance.baseValue) {
 				instance.removeModifier(id)
 				if(value - instance.baseValue > 0) {
-					instance.addPersistentModifier(EntityAttributeModifier(id, name, value - instance.baseValue, EntityAttributeModifier.Operation.ADDITION))
+					instance.addPersistentModifier(
+						EntityAttributeModifier(
+							id, name, value - instance.baseValue,
+							EntityAttributeModifier.Operation.ADDITION
+						)
+					)
 				}
 			}
 		} else {
 			if(value - instance.baseValue > 0) {
-				instance.addPersistentModifier(EntityAttributeModifier(id, name, value - instance.baseValue, EntityAttributeModifier.Operation.ADDITION))
+				instance.addPersistentModifier(
+					EntityAttributeModifier(
+						id, name, value - instance.baseValue,
+						EntityAttributeModifier.Operation.ADDITION
+					)
+				)
 			}
 		}
 	}
 
-	private fun checkAttributeModifiersMultiplier(instance: EntityAttributeInstance, id: UUID, name: String, value: Double) {
+	private fun checkAttributeModifiersMultiplier(
+		instance: EntityAttributeInstance,
+		id: UUID,
+		name: String,
+		value: Double
+	) {
 		val modifier = instance.getModifier(id)
 		if(modifier != null) {
 			if(modifier.value != value) {
 				instance.removeModifier(id)
 				if(value > 0) {
-					instance.addPersistentModifier(EntityAttributeModifier(id, name, value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL))
+					instance.addPersistentModifier(
+						EntityAttributeModifier(id, name, value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+					)
 				}
 			}
 		} else {
 			if(value > 0) {
-				instance.addPersistentModifier(EntityAttributeModifier(id, name, value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL))
+				instance.addPersistentModifier(
+					EntityAttributeModifier(id, name, value, EntityAttributeModifier.Operation.MULTIPLY_TOTAL)
+				)
 			}
 		}
 	}
