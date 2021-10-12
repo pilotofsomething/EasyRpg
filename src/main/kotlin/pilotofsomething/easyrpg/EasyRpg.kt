@@ -82,7 +82,9 @@ object EasyRpg : ModInitializer, ClientModInitializer {
                          (attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
                            (armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
 
-                val scaleFactor = min(max(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level),
+                val scaleFactor = min(max(
+                    (1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if (mRpg.level - pRpg.level > 0)
+                        { config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(mRpg.level - pRpg.level) } else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(mRpg.level - pRpg.level),
                     config.entities.expOptions.scalingSettings.scalingMin), config.entities.expOptions.scalingSettings.scalingMax)
                 pRpg.addXP(max((base * worth * scaleFactor).toLong(), 1))
             }

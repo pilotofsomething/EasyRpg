@@ -60,6 +60,8 @@
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.armor.value": "Weight",
   "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings": "Experience Scaling",
   "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.scalingAmount": "Scaling Amount",
+  "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.exponentialIncreaseAmount": "Exponential Scaling Increase",
+  "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.exponentialDecreaseAmount": "Exponential Scaling Decrease",
   "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.scalingMax": "Max Scaling",
   "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.scalingMin": "Min Scaling",
   "text.autoconfig.easyrpg.option.players.maxLevel": "Level Cap",
