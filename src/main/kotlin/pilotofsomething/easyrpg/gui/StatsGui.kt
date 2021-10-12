@@ -40,7 +40,7 @@ class StatsGui : LightweightGuiDescription() {
 		levelXp.setAlignment(HorizontalAlignment.RIGHT)
 		root.add(levelXp, 243, 4)
 
-		val xpBar = WDynamicBar(null as Texture?, null, { rpg.xpForLevel / rpg.xpReqForLevel.toFloat() }, WDynamicBar.Direction.RIGHT)
+		val xpBar = WDynamicBar(null as Texture?, null, { if(rpg.xpReqForLevel > 0) rpg.xpForLevel / rpg.xpReqForLevel.toFloat() else 1.0f }, WDynamicBar.Direction.RIGHT)
 		xpBar.setBarColor(0xB6FF00)
 		xpBar.setBarOpacity(0.67f)
 		xpBar.setBarBackgroundOpacity(0.33f)
