@@ -116,8 +116,6 @@
   "text.autoconfig.easyrpg.option.entities.scaleModeSettings.timeSettings.linear.@Tooltip": "The number of ticks it takes for a mob to\ngain 1 level from time.\nSet to -1 to disable the linear component.",
   "text.autoconfig.easyrpg.option.entities.scaleModeSettings.timeSettings.multiplier": "Multiplier Component",
   "text.autoconfig.easyrpg.option.entities.scaleModeSettings.timeSettings.multiplier.@Tooltip": "The number of ticks it takes for a mob to\ngain +100% levels from time.\nSet to -1 to disable the multiplier component.",
-  "text.autoconfig.easyrpg.option.entities.scaleModeSettings.dimensionSettings": "Dimension Scaling Modifiers",
-  "text.autoconfig.easyrpg.option.entities.scaleModeSettings.dimensionSettings.@Tooltip": "Per dimension list of scaling modifiers.\nNote that due to a Cloth Config bug\nthese need to be manually modified in the\nconfig file.",
   "easyrpg.generic.strength": "Strength",
   "easyrpg.generic.dexterity": "Dexterity",
   "easyrpg.generic.intelligence": "Intelligence",
