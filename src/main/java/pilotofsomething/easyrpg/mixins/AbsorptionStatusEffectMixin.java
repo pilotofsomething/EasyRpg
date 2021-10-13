@@ -12,12 +12,12 @@ public class AbsorptionStatusEffectMixin {
 
 	@ModifyConstant(method = "onRemoved(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/attribute/AttributeContainer;I)V", constant = @Constant(intValue = 4))
 	private int onRemoved(int a, LivingEntity entity, AttributeContainer attributes, int amplifier) {
-		return Math.max((int)(entity.getMaxHealth() * 0.2), 4);
+		return Math.max((int) (entity.getMaxHealth() * 0.2), 4);
 	}
 
 	@ModifyConstant(method = "onApplied(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/attribute/AttributeContainer;I)V", constant = @Constant(intValue = 4))
 	private int onApplied(int a, LivingEntity entity, AttributeContainer attributes, int amplifier) {
-		return Math.max((int)(entity.getMaxHealth() * 0.2), 4);
+		return Math.max((int) (entity.getMaxHealth() * 0.2), 4);
 	}
 
 }
