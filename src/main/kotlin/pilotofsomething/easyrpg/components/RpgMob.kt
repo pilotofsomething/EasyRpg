@@ -33,6 +33,8 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	override var level = -1
 	private val spDist = DoubleArray(5) { 0.0 }
 
+	override var absorptionAmount = 0
+
 	override fun readFromNbt(tag: NbtCompound) {
 		level = tag.getInt("Level")
 		val sp = tag.get("SP") as NbtList
@@ -40,6 +42,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			val dv = sp[i] as NbtDouble
 			spDist[i] = dv.doubleValue()
 		}
+		absorptionAmount = tag.getInt("AbsorptionValue")
 	}
 
 	override fun writeToNbt(tag: NbtCompound) {
@@ -49,6 +52,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			sp.add(NbtDouble.of(d))
 		}
 		tag.put("SP", sp)
+		tag.putInt("AbsorptionValue", absorptionAmount)
 	}
 
 	private fun getWeightedTime(players: List<PlayerEntity>): Long {

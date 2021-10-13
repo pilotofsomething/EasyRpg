@@ -31,6 +31,7 @@ val RPG_PLAYER: ComponentKey<IRpgPlayer> =
 
 interface IRpgEntity {
 	var level: Int
+	var absorptionAmount: Int
 
 	companion object {
 		val HEALTH_MODIFIER = UUID.fromString("3682f2f3-78f3-412a-9b1b-63804d3bafb8")!!
@@ -77,6 +78,8 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		set(value) {
 			field = value; syncFlags = syncFlags or SyncFlags.SYNC_XP
 		}
+
+	override var absorptionAmount = 0
 
 	@Environment(EnvType.SERVER)
 	override var timer = 0L // Used for scaling modes that scale over time
@@ -200,6 +203,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		spInt = tag.getInt("SpInt")
 		spDef = tag.getInt("SpDef")
 		timer = tag.getLong("Ticks")
+		absorptionAmount = tag.getInt("AbsorptionValue")
 	}
 
 	override fun writeToNbt(tag: NbtCompound) {
@@ -211,6 +215,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		tag.putInt("SpInt", spInt)
 		tag.putInt("SpDef", spDef)
 		tag.putLong("Ticks", timer)
+		tag.putInt("AbsorptionValue", absorptionAmount)
 	}
 
 	override fun serverTick() {
