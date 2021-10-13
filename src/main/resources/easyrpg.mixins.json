@@ -10,7 +10,8 @@
 	"HungerManagerMixin",
 	"LivingEntityMixin",
 	"PlayerEntityMixin",
-	"StatusEffectMixin"
+	"StatusEffectMixin",
+	"AbsorptionStatusEffectMixin"
   ],
   "client": [
 	"DamageParticleFactoryMixin",
