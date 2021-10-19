@@ -1,0 +1,10 @@
+{
+  "type": "apoli:attribute",
+  "modifier": {
+    "attribute": "minecraft:generic.max_health",
+    "value": -0.2,
+    "operation": "multiply_total",
+    "name": "bee health reduction"
+  },
+  "loading_priority": 1
+}

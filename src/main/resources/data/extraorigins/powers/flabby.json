@@ -1,0 +1,10 @@
+{
+  "type": "origins:attribute",
+  "modifier": {
+	"name": "Origin modifier",
+	"attribute": "generic.max_health",
+	"operation": "multiply_total",
+	"value": -0.2
+  },
+  "loading_priority": 1
+}

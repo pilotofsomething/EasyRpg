@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifiers": {
+		"attribute": "minecraft:generic.max_health",
+        "operation": "multiply_total",
+        "value": -0.2
+	},
+	"name": "Frail Hunter",
+	"description": "Your maximum health is reduced to 8 hearts.",
+    "loading_priority": 1
+}
