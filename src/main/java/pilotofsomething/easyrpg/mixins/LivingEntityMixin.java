@@ -7,8 +7,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pilotofsomething.easyrpg.SimpleRpgAttributes;
 import pilotofsomething.easyrpg.components.IRpgEntity;
 import pilotofsomething.easyrpg.ConfigKt;
@@ -67,9 +68,9 @@ public class LivingEntityMixin {
 		return amount * healthScaling;
 	}
 
-	@Redirect(method = "createLivingAttributes()Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/DefaultAttributeContainer;builder()Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;"))
-	private static DefaultAttributeContainer.Builder createLivingAttributes() {
-		return new DefaultAttributeContainer.Builder()
+	@Inject(method = "createLivingAttributes()Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;", at = @At("RETURN"))
+	private static void createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
+		cir.getReturnValue()
 				.add(SimpleRpgAttributes.INSTANCE.getSTRENGTH())
 				.add(SimpleRpgAttributes.INSTANCE.getDEXTERITY())
 				.add(SimpleRpgAttributes.INSTANCE.getINTELLIGENCE())
