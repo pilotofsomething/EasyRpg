@@ -103,7 +103,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 		val base = rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.ADD) it.value else 0.0 } ?: 0.0
 		val distMult =
-			rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_DISTANCE) it.value else 0.0 }
+			rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_DISTANCE) it.value else 1.0 }
 				?: 1.0
 		val totalMult =
 			rules?.map { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_TOTAL) it.value else 1.0 }
