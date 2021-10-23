@@ -48,8 +48,8 @@ fun addLootModifiers(context: LootContext, stack: ItemStack) {
 	if(level == 0) return
 
 	val quality = when {
-		context.luck < 0 -> qualities[Random.nextInt(min(abs(context.luck.toDouble() * 20), 250.0).toInt(), qualities.size)]
-		context.luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(context.luck.toDouble() * 20), 500.0).toInt())]
+		context.luck < 0 -> qualities[Random.nextInt(min(abs(context.luck.toDouble() * 20), qualities.size * 0.25).toInt(), qualities.size)]
+		context.luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(context.luck.toDouble() * 20), qualities.size * 0.5).toInt())]
 		else -> qualities.random()
 	}
 
