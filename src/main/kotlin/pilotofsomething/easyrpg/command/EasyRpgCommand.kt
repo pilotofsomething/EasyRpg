@@ -9,6 +9,7 @@ import net.minecraft.server.command.CommandManager.literal
 import net.minecraft.server.command.CommandManager.argument
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import pilotofsomething.easyrpg.components.IRpgPlayer
@@ -111,31 +112,31 @@ object EasyRpgCommand {
 
 		val rpg = RPG_PLAYER.get(player)
 
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.level", rpg.level)), false)
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.stats.total_xp", rpg.xp)), false)
+		source.sendFeedback(TranslatableText("easyrpg.command.player.stats.level", rpg.level), false)
+		source.sendFeedback(TranslatableText("easyrpg.command.player.stats.total_xp", rpg.xp), false)
 		if(rpg.level < config.players.maxLevel) {
 			source.sendFeedback(
-				Text.of(I18n.translate("easyrpg.command.player.stats.xp_level", rpg.xpForLevel, rpg.xpReqForLevel)),
+				TranslatableText("easyrpg.command.player.stats.xp_level", rpg.xpForLevel, rpg.xpReqForLevel),
 				false
 			)
 			source.sendFeedback(
-				Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl", rpg.xpReqForLevel - rpg.xpForLevel)),
+				TranslatableText("easyrpg.command.player.stats.xp_tnl", rpg.xpReqForLevel - rpg.xpForLevel),
 				false
 			)
 		} else {
 			source.sendFeedback(
-				Text.of(I18n.translate("easyrpg.command.player.stats.xp_level.max", rpg.xpForLevel, rpg.xpReqForLevel)),
+				TranslatableText("easyrpg.command.player.stats.xp_level.max", rpg.xpForLevel, rpg.xpReqForLevel),
 				false
 			)
 			source.sendFeedback(
-				Text.of(I18n.translate("easyrpg.command.player.stats.xp_tnl.max", rpg.xpReqForLevel - rpg.xpForLevel)),
+				TranslatableText("easyrpg.command.player.stats.xp_tnl.max", rpg.xpReqForLevel - rpg.xpForLevel),
 				false
 			)
 		}
 
 		for(stat in IRpgPlayer.Stats.values()) {
 			source.sendFeedback(
-				Text.of("  ${I18n.translate(stat.statName)}: ${String.format("%,d", rpg.getStat(stat))}"), false
+				LiteralText("  ").append(TranslatableText(stat.statName).append(LiteralText(String.format(" %d", rpg.getStat(stat))))), false
 			)
 		}
 
@@ -151,7 +152,7 @@ object EasyRpgCommand {
 		rpg.level = level - 1
 		rpg.xp = rpg.xpReqTotal
 		source.sendFeedback(
-			Text.of(I18n.translate("easyrpg.command.player.set_level", player.name.asString(), level)), true
+			TranslatableText("easyrpg.command.player.set_level", player.name.asString(), level), true
 		)
 		return 1
 	}
@@ -164,7 +165,7 @@ object EasyRpgCommand {
 		val rpg = RPG_PLAYER.get(player)
 		rpg.level = 1
 		rpg.xp = xp
-		source.sendFeedback(Text.of(I18n.translate("easyrpg.command.player.set_xp", player.name.asString(), xp)), true)
+		source.sendFeedback(TranslatableText("easyrpg.command.player.set_xp", player.name.asString(), xp), true)
 		return 1
 	}
 
@@ -177,7 +178,7 @@ object EasyRpgCommand {
 		rpg.level += amount - 1
 		rpg.xp = rpg.xpReqTotal
 		source.sendFeedback(
-			Text.of(I18n.translate("easyrpg.command.player.add_level", player.name.asString(), amount)), true
+			TranslatableText("easyrpg.command.player.add_level", player.name.asString(), amount), true
 		)
 		return 1
 	}
@@ -190,7 +191,7 @@ object EasyRpgCommand {
 		val rpg = RPG_PLAYER.get(player)
 		rpg.addXP(amount)
 		source.sendFeedback(
-			Text.of(I18n.translate("easyrpg.command.player.add_xp", player.name.asString(), amount)), true
+			TranslatableText("easyrpg.command.player.add_xp", player.name.asString(), amount), true
 		)
 		return 1
 	}

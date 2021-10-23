@@ -16,6 +16,8 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtString
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
+import net.minecraft.util.Formatting
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.registry.Registry
 import pilotofsomething.easyrpg.ScaleSettingOperation
@@ -29,7 +31,7 @@ import kotlin.random.Random
 
 private val qualities = ArrayList<Int>()
 
-private val qualityNames = arrayOf("Common", "Uncommon", "Rare", "Epic")
+private val qualityNames = arrayOf("easyrpg.qualities.common", "easyrpg.qualities.uncommon", "easyrpg.qualities.rare", "easyrpg.qualities.epic")
 
 fun setupQualities() {
 	qualities.clear()
@@ -48,8 +50,8 @@ fun addLootModifiers(context: LootContext, stack: ItemStack) {
 	if(level == 0) return
 
 	val quality = when {
-		context.luck < 0 -> qualities[Random.nextInt(min(abs(context.luck.toDouble() * 20), qualities.size * 0.25).toInt(), qualities.size)]
-		context.luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(context.luck.toDouble() * 20), qualities.size * 0.5).toInt())]
+		context.luck < 0 -> qualities[Random.nextInt(min(abs(context.luck.toDouble() * qualities.size * 0.02), qualities.size * 0.25).toInt(), qualities.size)]
+		context.luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(context.luck.toDouble() * qualities.size * 0.02), qualities.size * 0.5).toInt())]
 		else -> qualities.random()
 	}
 
@@ -93,8 +95,8 @@ fun addLootModifiers(context: LootContext, stack: ItemStack) {
 		}
 
 		nbt.put("ItemBonuses", list)
-		putItemTooltip(stack, String.format("Level %,d", level))
-		putItemTooltip(stack, qualityNames[quality - 1])
+		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.RESET).formatted(Formatting.WHITE))
+		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
 	if(FabricLoader.getInstance().isModLoaded("trinkets")) {
 		if(stack.item is Trinket) {
@@ -106,8 +108,8 @@ fun addLootModifiers(context: LootContext, stack: ItemStack) {
 			}
 
 			nbt.put("TrinketAttributeModifiers", list)
-			putItemTooltip(stack, String.format("Level %,d", level))
-			putItemTooltip(stack, qualityNames[quality - 1])
+			putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
+			putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 		}
 	}
 }
@@ -128,12 +130,12 @@ private fun getAttributeNBT(stat: IRpgPlayer.Stats, value: Int, slot: EquipmentS
 	return mNbt
 }
 
-private fun putItemTooltip(stack: ItemStack, tooltip: String) {
+private fun putItemTooltip(stack: ItemStack, tooltip: Text) {
 	val display = stack.getOrCreateSubNbt("display")
 	val list = if(!display.contains("Lore", NbtElement.LIST_TYPE.toInt())) {
 		NbtList()
 	} else display.getList("Lore", NbtElement.STRING_TYPE.toInt())
-	list.add(NbtString.of(Text.Serializer.toJson(Text.of(tooltip))))
+	list.add(NbtString.of(Text.Serializer.toJson(tooltip)))
 	display.put("Lore", list)
 }
 
