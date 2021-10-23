@@ -64,6 +64,9 @@ dependencies {
 
     val modmenuVersion: String by project
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
+
+    val trinketsVersion: String by project
+    modImplementation("dev.emi:trinkets:$trinketsVersion")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16

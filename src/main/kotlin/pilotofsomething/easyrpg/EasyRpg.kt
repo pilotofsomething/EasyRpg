@@ -30,6 +30,7 @@ import pilotofsomething.easyrpg.components.RPG_MOB
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.gui.StatsGui
 import pilotofsomething.easyrpg.gui.StatsScreen
+import pilotofsomething.easyrpg.item.setupQualities
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -62,6 +63,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 	override fun onInitialize() {
 		AutoConfig.register(ModConfig::class.java, ::GsonConfigSerializer)
 		config = AutoConfig.getConfigHolder(ModConfig::class.java).config
+		setupQualities()
 
 		ServerPlayNetworking.registerGlobalReceiver(
 			ADD_STAT_ID) { server: MinecraftServer, player: ServerPlayerEntity, _: ServerPlayNetworkHandler, buf: PacketByteBuf, _: PacketSender ->

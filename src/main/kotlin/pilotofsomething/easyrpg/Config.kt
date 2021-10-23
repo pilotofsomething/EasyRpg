@@ -24,6 +24,10 @@ class ModConfig : ConfigData {
 	@ConfigEntry.Gui.TransitiveObject
 	var entities = EntitiesOptions()
 
+	@ConfigEntry.Category("Items")
+	@ConfigEntry.Gui.TransitiveObject
+	var items = ItemOptions()
+
 	class ClientOptions {
 		var renderCustomHud = true
 		var renderVanillaDamageParticle = false
@@ -110,40 +114,6 @@ class ModConfig : ConfigData {
 				var scalingMin = 0.1
 			}
 		}
-
-		class ScaleModeSettings {
-			@ConfigEntry.Gui.Tooltip
-			var distanceDivisor = 120.0
-
-			@ConfigEntry.Gui.Tooltip
-			var levelRatio = 0.5
-
-			@ConfigEntry.Gui.CollapsibleObject
-			var timeSettings = TimeSettings()
-
-			@ConfigEntry.Gui.Excluded
-			var dimensionSettings = hashMapOf(
-				"minecraft:overworld" to arrayListOf(
-					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
-				),
-				"minecraft:the_nether" to arrayListOf(
-					ScaleSettingOperation(ScaleSettingOperation.Operation.MULTIPLY_DISTANCE, 8.0),
-					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
-				),
-				"minecraft:the_end" to arrayListOf(
-					ScaleSettingOperation(ScaleSettingOperation.Operation.ADD, 75.0),
-					ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 75.0)
-				)
-			)
-
-			class TimeSettings {
-				@ConfigEntry.Gui.Tooltip
-				var linear = 120000L
-
-				@ConfigEntry.Gui.Tooltip
-				var multiplier = 480000L
-			}
-		}
 	}
 
 	class PlayerOptions {
@@ -187,8 +157,81 @@ class ModConfig : ConfigData {
 		}
 	}
 
+	class ItemOptions {
+		var enabled: Boolean = false
+
+		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+		var scaleMode = ScalingMode.LEVEL_DISTANCE
+
+		@ConfigEntry.Gui.CollapsibleObject
+		var scaleSettings = ScaleModeSettings()
+
+		var maxLevel: Int = 999
+
+		var spGain: Double = 1.0
+
+		var healthGain: Double = 2.0
+		var strengthGain: Double = 1.0
+		var dexterityGain: Double = 1.0
+		var intelligenceGain: Double = 1.0
+		var defenseGain: Double = 1.0
+
+		@ConfigEntry.Gui.CollapsibleObject
+		var rarities = Rarities()
+
+		class Rarities {
+			@ConfigEntry.Gui.CollapsibleObject
+			var common = RaritySettings(600, 1.0, 1)
+
+			@ConfigEntry.Gui.CollapsibleObject
+			var uncommon = RaritySettings(280, 1.5, 2)
+
+			@ConfigEntry.Gui.CollapsibleObject
+			var rare = RaritySettings(100, 2.0, 3)
+
+			@ConfigEntry.Gui.CollapsibleObject
+			var epic = RaritySettings(20, 2.5, 4)
+		}
+
+		class RaritySettings(var weight: Int, var spMultiplier: Double, var maxStatCount: Int)
+	}
+
 	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var cap: Int)
 	class StatOptionsNoSp(var base: Double, var gain: Double, var cap: Double)
+
+	class ScaleModeSettings {
+		@ConfigEntry.Gui.Tooltip
+		var distanceDivisor = 120.0
+
+		@ConfigEntry.Gui.Tooltip
+		var levelRatio = 0.5
+
+		@ConfigEntry.Gui.CollapsibleObject
+		var timeSettings = TimeSettings()
+
+		@ConfigEntry.Gui.Excluded
+		var dimensionSettings = hashMapOf(
+			"minecraft:overworld" to arrayListOf(
+				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
+			),
+			"minecraft:the_nether" to arrayListOf(
+				ScaleSettingOperation(ScaleSettingOperation.Operation.MULTIPLY_DISTANCE, 8.0),
+				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
+			),
+			"minecraft:the_end" to arrayListOf(
+				ScaleSettingOperation(ScaleSettingOperation.Operation.ADD, 75.0),
+				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 75.0)
+			)
+		)
+
+		class TimeSettings {
+			@ConfigEntry.Gui.Tooltip
+			var linear = 120000L
+
+			@ConfigEntry.Gui.Tooltip
+			var multiplier = 480000L
+		}
+	}
 }
 
 class ScaleSettingOperation(var operation: Operation, var value: Double) {

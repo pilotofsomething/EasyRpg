@@ -11,7 +11,10 @@
 	"LivingEntityMixin",
 	"PlayerEntityMixin",
 	"StatusEffectMixin",
-	"AbsorptionStatusEffectMixin"
+	"AbsorptionStatusEffectMixin",
+	"ItemEntryMixin",
+	"ItemStackMixin",
+	"AbstractConfigScreenMixin"
   ],
   "client": [
 	"DamageParticleFactoryMixin",
