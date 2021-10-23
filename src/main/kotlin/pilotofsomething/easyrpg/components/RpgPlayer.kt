@@ -19,7 +19,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import pilotofsomething.easyrpg.ScalingMode
-import pilotofsomething.easyrpg.SimpleRpgAttributes
+import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.config
 import java.util.*
 import kotlin.math.abs
@@ -62,10 +62,10 @@ interface IRpgPlayer : IRpgEntity, Component, ServerTickingComponent, AutoSynced
 
 	enum class Stats(val statName: String, val attribute: EntityAttribute) {
 		HEALTH("easyrpg.gui.health", EntityAttributes.GENERIC_MAX_HEALTH),
-		STRENGTH("easyrpg.generic.strength", SimpleRpgAttributes.STRENGTH),
-		DEXTERITY("easyrpg.generic.dexterity", SimpleRpgAttributes.DEXTERITY),
-		INTELLIGENCE("easyrpg.generic.intelligence", SimpleRpgAttributes.INTELLIGENCE),
-		DEFENSE("easyrpg.generic.defense", SimpleRpgAttributes.DEFENSE)
+		STRENGTH("easyrpg.generic.strength", EasyRpgAttributes.STRENGTH),
+		DEXTERITY("easyrpg.generic.dexterity", EasyRpgAttributes.DEXTERITY),
+		INTELLIGENCE("easyrpg.generic.intelligence", EasyRpgAttributes.INTELLIGENCE),
+		DEFENSE("easyrpg.generic.defense", EasyRpgAttributes.DEFENSE)
 	}
 }
 
@@ -231,10 +231,10 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 		val maxHealthInst = player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
 		val toughnessInst = player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)
-		val strInst = player.getAttributeInstance(SimpleRpgAttributes.STRENGTH)
-		val dexInst = player.getAttributeInstance(SimpleRpgAttributes.DEXTERITY)
-		val intInst = player.getAttributeInstance(SimpleRpgAttributes.INTELLIGENCE)
-		val defInst = player.getAttributeInstance(SimpleRpgAttributes.DEFENSE)
+		val strInst = player.getAttributeInstance(EasyRpgAttributes.STRENGTH)
+		val dexInst = player.getAttributeInstance(EasyRpgAttributes.DEXTERITY)
+		val intInst = player.getAttributeInstance(EasyRpgAttributes.INTELLIGENCE)
+		val defInst = player.getAttributeInstance(EasyRpgAttributes.DEFENSE)
 
 		strInst!!.baseValue = baseStr.toDouble()
 		dexInst!!.baseValue = baseDex.toDouble()

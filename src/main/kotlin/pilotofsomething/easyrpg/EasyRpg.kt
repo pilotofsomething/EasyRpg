@@ -41,7 +41,7 @@ fun registerEntityAttribute(id: String, attribute: EntityAttribute): EntityAttri
 	return Registry.register(Registry.ATTRIBUTE, "easy_rpg:$id", attribute)
 }
 
-object SimpleRpgAttributes {
+object EasyRpgAttributes {
 	val STRENGTH = registerEntityAttribute("generic.strength",
 	                                       ClampedEntityAttribute("easyrpg.generic.strength", 10.0, 1.0,
 	                                                              Int.MAX_VALUE.toDouble()).setTracked(true))

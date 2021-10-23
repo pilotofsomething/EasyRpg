@@ -16,7 +16,7 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.util.Identifier
 import pilotofsomething.easyrpg.ScaleSettingOperation
 import pilotofsomething.easyrpg.ScalingMode
-import pilotofsomething.easyrpg.SimpleRpgAttributes
+import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.config
 import java.util.*
 import kotlin.math.max
@@ -143,10 +143,10 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 			val maxHealthInst = entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
 			val toughnessInst = entity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)
-			val strInst = entity.getAttributeInstance(SimpleRpgAttributes.STRENGTH)
-			val dexInst = entity.getAttributeInstance(SimpleRpgAttributes.DEXTERITY)
-			val intInst = entity.getAttributeInstance(SimpleRpgAttributes.INTELLIGENCE)
-			val defInst = entity.getAttributeInstance(SimpleRpgAttributes.DEFENSE)
+			val strInst = entity.getAttributeInstance(EasyRpgAttributes.STRENGTH)
+			val dexInst = entity.getAttributeInstance(EasyRpgAttributes.DEXTERITY)
+			val intInst = entity.getAttributeInstance(EasyRpgAttributes.INTELLIGENCE)
+			val defInst = entity.getAttributeInstance(EasyRpgAttributes.DEFENSE)
 
 			strInst!!.baseValue = getStr(true).toDouble()
 			dexInst!!.baseValue = getDex(true).toDouble()
@@ -177,10 +177,10 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 		val maxHealthInst = entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
 		val toughnessInst = entity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)
-		val strInst = entity.getAttributeInstance(SimpleRpgAttributes.STRENGTH)
-		val dexInst = entity.getAttributeInstance(SimpleRpgAttributes.DEXTERITY)
-		val intInst = entity.getAttributeInstance(SimpleRpgAttributes.INTELLIGENCE)
-		val defInst = entity.getAttributeInstance(SimpleRpgAttributes.DEFENSE)
+		val strInst = entity.getAttributeInstance(EasyRpgAttributes.STRENGTH)
+		val dexInst = entity.getAttributeInstance(EasyRpgAttributes.DEXTERITY)
+		val intInst = entity.getAttributeInstance(EasyRpgAttributes.INTELLIGENCE)
+		val defInst = entity.getAttributeInstance(EasyRpgAttributes.DEFENSE)
 
 		strInst!!.baseValue = getStr(true).toDouble()
 		dexInst!!.baseValue = getDex(true).toDouble()

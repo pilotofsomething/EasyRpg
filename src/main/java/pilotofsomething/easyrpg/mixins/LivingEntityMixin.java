@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import pilotofsomething.easyrpg.SimpleRpgAttributes;
+import pilotofsomething.easyrpg.EasyRpgAttributes;
 import pilotofsomething.easyrpg.components.IRpgEntity;
 import pilotofsomething.easyrpg.ConfigKt;
 import pilotofsomething.easyrpg.components.RpgMobKt;
@@ -39,15 +39,15 @@ public class LivingEntityMixin {
 						ConfigKt.getConfig().getEntities().getDamage().getCap());
 			}
 
-			double defense = getAttributeValue(SimpleRpgAttributes.INSTANCE.getDEFENSE());
+			double defense = getAttributeValue(EasyRpgAttributes.INSTANCE.getDEFENSE());
 			if(source.isMagic()) {
-				double intelligence = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getINTELLIGENCE());
+				double intelligence = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getINTELLIGENCE());
 				return damage * (float) (intelligence / defense);
 			} else if(source.isProjectile()) {
-				double dexterity = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getDEXTERITY());
+				double dexterity = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getDEXTERITY());
 				return damage * (float) (dexterity / defense);
 			} else {
-				double strength = attacker.getAttributeValue(SimpleRpgAttributes.INSTANCE.getSTRENGTH());
+				double strength = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getSTRENGTH());
 				return damage * (float) (strength / defense);
 			}
 		}
@@ -71,10 +71,10 @@ public class LivingEntityMixin {
 	@Inject(method = "createLivingAttributes()Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;", at = @At("RETURN"))
 	private static void createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
 		cir.getReturnValue()
-				.add(SimpleRpgAttributes.INSTANCE.getSTRENGTH())
-				.add(SimpleRpgAttributes.INSTANCE.getDEXTERITY())
-				.add(SimpleRpgAttributes.INSTANCE.getINTELLIGENCE())
-				.add(SimpleRpgAttributes.INSTANCE.getDEFENSE());
+				.add(EasyRpgAttributes.INSTANCE.getSTRENGTH())
+				.add(EasyRpgAttributes.INSTANCE.getDEXTERITY())
+				.add(EasyRpgAttributes.INSTANCE.getINTELLIGENCE())
+				.add(EasyRpgAttributes.INSTANCE.getDEFENSE());
 	}
 
 	@Shadow
