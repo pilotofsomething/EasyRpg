@@ -121,12 +121,12 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 		return when {
 			scaleMode.distance && !scaleMode.level && !scaleMode.time -> max(
-				min((base + (dist * distMult * totalMult)), maximum), minimum
+				min(Random.nextDouble(0.9, 1.1) * (base + (dist * distMult * totalMult)), maximum), minimum
 			).toInt()
 			players.isEmpty() -> -1
-			scaleMode == ScalingMode.LEVEL -> max(min(level, maximum), minimum).toInt()
+			scaleMode == ScalingMode.LEVEL -> max(min(Random.nextDouble(0.9, 1.1) * level, maximum), minimum).toInt()
 			else -> max(
-				min((base + level * levelRatio + (timeLinear + (dist * distMult)) * time * totalMult), maximum), minimum
+				min(Random.nextDouble(0.9, 1.1) * (base + level * levelRatio + (timeLinear + (dist * distMult)) * time * totalMult), maximum), minimum
 			).toInt()
 		}
 	}
