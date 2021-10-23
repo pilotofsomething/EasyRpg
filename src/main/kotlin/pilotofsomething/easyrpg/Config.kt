@@ -6,6 +6,8 @@ import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.ConfigData
 import me.shedaniel.autoconfig.annotation.Config
 import me.shedaniel.autoconfig.annotation.ConfigEntry
+import me.shedaniel.clothconfig2.gui.AbstractConfigScreen
+import pilotofsomething.easyrpg.item.setupQualities
 
 lateinit var config: ModConfig
 
@@ -248,6 +250,10 @@ class ScaleSettingOperation(var operation: Operation, var value: Double) {
 
 class ConfigScreen : ModMenuApi {
 	override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
-		return ConfigScreenFactory { parent -> AutoConfig.getConfigScreen(ModConfig::class.java, parent).get() }
+		return ConfigScreenFactory { parent ->
+			val screen = AutoConfig.getConfigScreen(ModConfig::class.java, parent).get()
+			(screen as AbstractConfigScreen).setSavingRunnable { AutoConfig.getConfigHolder(ModConfig::class.java).save(); setupQualities() }
+			screen
+		}
 	}
 }
