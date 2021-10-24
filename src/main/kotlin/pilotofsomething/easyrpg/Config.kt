@@ -161,6 +161,9 @@ class ModConfig : ConfigData {
 
 	class ItemOptions {
 		var enabled: Boolean = false
+		var crafted: Boolean = false
+
+		var craftedLevelMult: Double = 0.5
 
 		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
 		var scaleMode = ScalingMode.LEVEL_DISTANCE

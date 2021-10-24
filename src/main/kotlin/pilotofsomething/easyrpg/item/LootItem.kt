@@ -2,19 +2,18 @@ package pilotofsomething.easyrpg.item
 
 import dev.emi.trinkets.api.Trinket
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttributeModifier
 import net.minecraft.entity.mob.MobEntity
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Wearable
-import net.minecraft.loot.context.LootContext
-import net.minecraft.loot.context.LootContextParameters
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtList
 import net.minecraft.nbt.NbtString
-import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
@@ -41,17 +40,22 @@ fun setupQualities() {
 	qualities.addAll(IntArray(config.items.rarities.common.weight) { 1 }.asList())
 }
 
-fun addLootModifiers(context: LootContext, stack: ItemStack) {
-	val level = when(val entity = context.get(LootContextParameters.THIS_ENTITY)) {
-		is ServerPlayerEntity -> getItemLevel(entity, context.get(LootContextParameters.ORIGIN) ?: Vec3d.ZERO)
+fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float, crafted: Boolean) {
+	val level = when(entity) {
+		is PlayerEntity -> if(!crafted) {
+			getItemLevel(entity, pos ?: Vec3d.ZERO)
+		} else {
+			val rpg = RPG_PLAYER.get(entity)
+			min(max((rpg.level * config.items.craftedLevelMult * Random.nextDouble(0.9, 1.1)).toInt(), 1), config.items.maxLevel)
+		}
 		is LivingEntity -> RPG_MOB.get(entity).level
 		else -> 0
 	}
 	if(level == 0) return
 
 	val quality = when {
-		context.luck < 0 -> qualities[Random.nextInt(min(abs(context.luck.toDouble() * qualities.size * 0.02), qualities.size * 0.25).toInt(), qualities.size)]
-		context.luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(context.luck.toDouble() * qualities.size * 0.02), qualities.size * 0.5).toInt())]
+		luck < 0 -> qualities[Random.nextInt(min(abs(luck.toDouble() * qualities.size * 0.02), qualities.size * 0.25).toInt(), qualities.size)]
+		luck > 0 -> qualities[Random.nextInt(0, qualities.size - min(abs(luck.toDouble() * qualities.size * 0.02), qualities.size * 0.5).toInt())]
 		else -> qualities.random()
 	}
 
@@ -139,7 +143,7 @@ private fun putItemTooltip(stack: ItemStack, tooltip: Text) {
 	display.put("Lore", list)
 }
 
-private fun getItemLevel(player: ServerPlayerEntity, pos: Vec3d): Int {
+private fun getItemLevel(player: PlayerEntity, pos: Vec3d): Int {
 	val rpg = RPG_PLAYER.get(player)
 	val scaleMode = config.items.scaleMode
 

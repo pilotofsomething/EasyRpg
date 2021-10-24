@@ -13,7 +13,8 @@
 	"StatusEffectMixin",
 	"AbsorptionStatusEffectMixin",
 	"ItemEntryMixin",
-	"ItemStackMixin"
+	"ItemStackMixin",
+	"ItemMixin"
   ],
   "client": [
 	"DamageParticleFactoryMixin",

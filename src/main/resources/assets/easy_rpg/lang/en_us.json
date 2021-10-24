@@ -118,6 +118,8 @@
   "text.autoconfig.easyrpg.option.entities.scaleModeSettings.timeSettings.multiplier.@Tooltip": "The number of ticks it takes for a mob to\ngain +100% levels from time.\nSet to -1 to disable the multiplier component.",
   "text.autoconfig.easyrpg.category.Items": "Items",
   "text.autoconfig.easyrpg.option.items.enabled": "Enable Item Levels",
+  "text.autoconfig.easyrpg.option.items.crafted": "Enable Levels on Crafted Items",
+  "text.autoconfig.easyrpg.option.items.craftedLevelMult": "Crafted Item Level Multiplier",
   "text.autoconfig.easyrpg.option.items.scaleMode": "Scaling Mode",
   "text.autoconfig.easyrpg.option.items.scaleSettings": "Scaling Settings",
   "text.autoconfig.easyrpg.option.items.scaleSettings.distanceDivisor": "Distance Divisor",

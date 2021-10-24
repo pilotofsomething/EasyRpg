@@ -3,6 +3,7 @@ package pilotofsomething.easyrpg.mixins;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.entry.ItemEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +25,8 @@ public class ItemEntryMixin {
 	private void generateLoot(Consumer<ItemStack> lootConsumer, LootContext context, CallbackInfo ci) {
 		if(ConfigKt.getConfig().getItems().getEnabled()) {
 			ItemStack stack = new ItemStack(item);
-			LootItemKt.addLootModifiers(context, stack);
+			LootItemKt.addLootModifiers(context.get(LootContextParameters.THIS_ENTITY), context.get(LootContextParameters.ORIGIN),
+					stack, context.getLuck(), false);
 			lootConsumer.accept(stack);
 			ci.cancel();
 		}
