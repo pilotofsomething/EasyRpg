@@ -59,6 +59,10 @@ class ModConfig : ConfigData {
 		var damage = StatOptionsNoSp(1.0, 0.2, 1000.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
+		@ConfigEntry.Gui.Tooltip
+		var damageScaling = DamageScalingOptions(0.925, 0.25)
+
+		@ConfigEntry.Gui.CollapsibleObject
 		var toughness = StatOptionsNoSp(1.0, 1.8, 2000.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
@@ -136,6 +140,10 @@ class ModConfig : ConfigData {
 		var damage = StatOptionsNoSp(1.0, 0.2, 1000.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
+		@ConfigEntry.Gui.Tooltip
+		var damageScaling = DamageScalingOptions(0.925, 0.25)
+
+		@ConfigEntry.Gui.CollapsibleObject
 		var toughness = StatOptionsNoSp(1.0, 1.8, 2000.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
@@ -203,6 +211,7 @@ class ModConfig : ConfigData {
 
 	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var cap: Int)
 	class StatOptionsNoSp(var base: Double, var gain: Double, var cap: Double)
+	class DamageScalingOptions(var amount: Double, var limit: Double)
 
 	class ScaleModeSettings {
 		@ConfigEntry.Gui.Tooltip

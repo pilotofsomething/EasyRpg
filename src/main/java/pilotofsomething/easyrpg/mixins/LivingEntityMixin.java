@@ -26,6 +26,10 @@ public class LivingEntityMixin {
 			if(attacker instanceof PlayerEntity) {
 				rpg = RpgPlayerKt.getRPG_PLAYER().get(attacker);
 			} else rpg = RpgMobKt.getRPG_MOB().get(attacker);
+			IRpgEntity thisRpg;
+			if((Object)this instanceof PlayerEntity) {
+				thisRpg = RpgPlayerKt.getRPG_PLAYER().get(this);
+			} else thisRpg = RpgMobKt.getRPG_MOB().get(this);
 
 			float damage = amount;
 
@@ -33,10 +37,16 @@ public class LivingEntityMixin {
 				damage *= Math.min(ConfigKt.config.getPlayers().getDamage().getBase()
 								+ ConfigKt.config.getPlayers().getDamage().getGain() * (rpg.getLevel() - 1),
 						ConfigKt.getConfig().getPlayers().getDamage().getCap());
+				damage *= Math.max(
+						Math.pow(ConfigKt.getConfig().getPlayers().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
+						ConfigKt.getConfig().getPlayers().getDamageScaling().getLimit());
 			} else {
 				damage *= Math.min(ConfigKt.config.getEntities().getDamage().getBase()
 								+ ConfigKt.config.getEntities().getDamage().getGain() * (rpg.getLevel() - 1),
 						ConfigKt.getConfig().getEntities().getDamage().getCap());
+				damage *= Math.max(
+						Math.pow(ConfigKt.getConfig().getEntities().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
+						ConfigKt.getConfig().getEntities().getDamageScaling().getLimit());
 			}
 
 			double defense = getAttributeValue(EasyRpgAttributes.INSTANCE.getDEFENSE());
