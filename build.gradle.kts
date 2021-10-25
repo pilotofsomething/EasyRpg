@@ -32,6 +32,9 @@ repositories {
     maven {
         setUrl("https://maven.shedaniel.me/")
     }
+    maven {
+        setUrl("https://maven.bai.lol")
+    }
 }
 dependencies {
     val minecraftVersion: String by project
@@ -67,6 +70,10 @@ dependencies {
 
     val trinketsVersion: String by project
     modImplementation("dev.emi:trinkets:$trinketsVersion")
+
+    val wthitVersion: String by project
+    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
+    modRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16

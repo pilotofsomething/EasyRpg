@@ -3,6 +3,7 @@ package pilotofsomething.easyrpg.components
 import dev.onyxstudios.cca.api.v3.component.Component
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
+import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
 import net.minecraft.entity.LivingEntity
@@ -13,6 +14,8 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.nbt.NbtDouble
 import net.minecraft.nbt.NbtList
+import net.minecraft.network.PacketByteBuf
+import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import pilotofsomething.easyrpg.ScaleSettingOperation
 import pilotofsomething.easyrpg.ScalingMode
@@ -27,7 +30,7 @@ import kotlin.random.Random
 val RPG_MOB: ComponentKey<IRpgMob> =
 	ComponentRegistry.getOrCreate(Identifier("easy_rpg", "entity"), IRpgMob::class.java)
 
-interface IRpgMob : IRpgEntity, Component, ServerTickingComponent
+interface IRpgMob : IRpgEntity, Component, ServerTickingComponent, AutoSyncedComponent
 
 class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	override var level = -1
@@ -171,6 +174,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			)
 			checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
 			entity.health = entity.maxHealth
+			RPG_MOB.sync(entity)
 		}
 
 		val oldHealth = entity.maxHealth
@@ -303,6 +307,18 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				(config.entities.defenseOptions.spGain * sp * this.spDist[4]).toInt() else 0,
 			config.entities.defenseOptions.cap
 		)
+	}
+
+	override fun writeSyncPacket(buf: PacketByteBuf, recipient: ServerPlayerEntity) {
+		buf.writeVarInt(level)
+	}
+
+	override fun applySyncPacket(buf: PacketByteBuf) {
+		level = buf.readVarInt()
+	}
+
+	override fun shouldSyncWith(player: ServerPlayerEntity): Boolean {
+		return player.distanceTo(entity) < 128
 	}
 
 	companion object {

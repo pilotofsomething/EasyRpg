@@ -190,5 +190,7 @@
   "easyrpg.command.player.stats.xp_level": "    XP: %d/%d",
   "easyrpg.command.player.stats.xp_level.max": "    XP: MAX LEVEL",
   "easyrpg.command.player.stats.xp_tnl": "    Next: %d",
-  "easyrpg.command.player.stats.xp_tnl.max": "    Next: -"
+  "easyrpg.command.player.stats.xp_tnl.max": "    Next: -",
+  "easyrpg.waila.level": "Level",
+  "easyrpg.waila.xp": "XP"
 }

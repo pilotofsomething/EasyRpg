@@ -52,6 +52,10 @@
     "cardinal-components": [
       "easy_rpg:player",
       "easy_rpg:entity"
-    ]
+    ],
+    "waila:plugins": {
+      "id": "easy_rpg:easy_rpg_waila",
+      "initializer": "pilotofsomething.easyrpg.waila.EasyRpgPlugin"
+    }
   }
 }

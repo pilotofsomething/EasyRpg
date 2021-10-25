@@ -78,38 +78,16 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register { _, entity, killedEntity ->
 			if(entity is PlayerEntity && killedEntity !is PlayerEntity && killedEntity is LivingEntity) {
 				val pRpg = RPG_PLAYER.get(entity)
-				val mRpg = RPG_MOB.get(killedEntity)
-
-				val base = config.entities.expOptions.baseValue * mRpg.level.toDouble()
-					.pow(config.entities.expOptions.exponent)
-
-				val baseHealth =
-					killedEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)?.baseValue ?: 0.0
-				val attack = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.value ?: 0.0
-				val armor = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)?.value ?: 0.0
-
-				val mobID = Registry.ENTITY_TYPE.getId(killedEntity.type).toString()
-				val worth = if(config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
-					config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
-				} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
-						(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
-						(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
-
-				val scaleFactor = min(max(
-					(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if(mRpg.level - pRpg.level > 0) {
-						config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
-							mRpg.level - pRpg.level)
-					} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
-						mRpg.level - pRpg.level),
-					config.entities.expOptions.scalingSettings.scalingMin),
-				                      config.entities.expOptions.scalingSettings.scalingMax)
-				pRpg.addXP(max((base * worth * scaleFactor).toLong(), 1))
+				pRpg.addXP(calculateExpValue(entity, killedEntity))
 			}
 		}
 
 		CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
 			EasyRpgCommand.register(dispatcher)
 		}
+
+		// Attack damage is set to be tracked so the WAILA plugin can estimate exp value
+		EntityAttributes.GENERIC_ATTACK_DAMAGE.isTracked = true
 	}
 
 	override fun onInitializeClient() {
@@ -123,6 +101,37 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 			}
 		}
 	}
+}
+
+fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
+	if(entity == null) return 0
+	val pRpg = RPG_PLAYER.get(entity)
+	val mRpg = RPG_MOB.get(killedEntity)
+
+	val base = config.entities.expOptions.baseValue * mRpg.level.toDouble()
+		.pow(config.entities.expOptions.exponent)
+
+	val baseHealth =
+		killedEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)?.baseValue ?: 0.0
+	val attack = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.value ?: 0.0
+	val armor = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)?.value ?: 0.0
+
+	val mobID = Registry.ENTITY_TYPE.getId(killedEntity.type).toString()
+	val worth = if(config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
+		config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
+	} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
+			(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
+			(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
+
+	val scaleFactor = min(max(
+		(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if(mRpg.level - pRpg.level > 0) {
+			config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
+				mRpg.level - pRpg.level)
+		} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
+			mRpg.level - pRpg.level),
+		config.entities.expOptions.scalingSettings.scalingMin),
+		config.entities.expOptions.scalingSettings.scalingMax)
+	return max((base * worth * scaleFactor).toLong(), 1)
 }
 
 @Suppress("UNUSED")
