@@ -191,6 +191,8 @@
   "easyrpg.command.player.stats.xp_level.max": "    XP: MAX LEVEL",
   "easyrpg.command.player.stats.xp_tnl": "    Next: %d",
   "easyrpg.command.player.stats.xp_tnl.max": "    Next: -",
+  "easyrpg.command.reload.success": "Reloaded Easy RPG config",
+  "easyrpg.command.reload.fail": "Failed to load Easy RPG config",
   "easyrpg.waila.level": "Level",
   "easyrpg.waila.xp": "XP"
 }

@@ -3,6 +3,7 @@ package pilotofsomething.easyrpg.command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
+import me.shedaniel.autoconfig.AutoConfig
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.server.command.CommandManager.literal
@@ -12,6 +13,7 @@ import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import pilotofsomething.easyrpg.ModConfig
 import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.config
@@ -97,6 +99,19 @@ object EasyRpgCommand {
 							})
 					)
 				)
+			).then(
+				literal("reload").requires { source -> source.hasPermissionLevel(2) }.executes { context ->
+					val holder = AutoConfig.getConfigHolder(ModConfig::class.java)
+					val result = holder.load()
+					config = holder.get()
+					if(result) {
+						context.source.sendFeedback(TranslatableText("easyrpg.command.reload.success"), true)
+						1
+					} else {
+						context.source.sendFeedback(TranslatableText("easyrpg.command.reload.fail"), true)
+						0
+					}
+				}
 			)
 		)
 	}
