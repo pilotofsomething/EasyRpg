@@ -194,5 +194,8 @@
   "easyrpg.command.reload.success": "Reloaded Easy RPG config",
   "easyrpg.command.reload.fail": "Failed to load Easy RPG config",
   "easyrpg.waila.level": "Level",
-  "easyrpg.waila.xp": "XP"
+  "easyrpg.waila.xp": "XP",
+  "config.waila.plugin_easy_rpg_waila": "Easy RPG",
+  "config.waila.plugin_easy_rpg_waila.show_levels": "Show Levels",
+  "config.waila.plugin_easy_rpg_waila.show_xp_value": "Show Entity XP value"
 }

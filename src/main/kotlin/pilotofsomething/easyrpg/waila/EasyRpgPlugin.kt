@@ -4,11 +4,13 @@ import mcp.mobius.waila.api.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.text.LiteralText
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import pilotofsomething.easyrpg.calculateExpValue
 import pilotofsomething.easyrpg.components.RPG_MOB
+import pilotofsomething.easyrpg.components.RPG_PLAYER
 
 object Settings {
 	val showLevels = Identifier("easy_rpg_waila:show_levels")
@@ -27,7 +29,9 @@ class LivingEntityComponent : IEntityComponentProvider {
 	override fun appendBody(tooltip: ITooltip, accessor: IEntityAccessor, config: IPluginConfig) {
 		val entity = accessor.getEntity<LivingEntity>()
 		if(config.getBoolean(Settings.showLevels)) {
-			val rpg = RPG_MOB.get(entity)
+			val rpg = if(entity !is PlayerEntity) {
+				RPG_MOB.get(entity)
+			} else RPG_PLAYER.get(entity)
 			tooltip.addPair(TranslatableText("easyrpg.waila.level"), LiteralText(I18n.translate("%,d", rpg.level)))
 		}
 		if(config.getBoolean(Settings.showXpValue)) {
