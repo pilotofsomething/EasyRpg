@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtList
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import pilotofsomething.easyrpg.ScaleSettingOperation
 import pilotofsomething.easyrpg.ScalingMode
 import pilotofsomething.easyrpg.EasyRpgAttributes
@@ -37,6 +38,8 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	private val spDist = DoubleArray(5) { 0.0 }
 
 	override var absorptionAmount = 0
+
+	var lastSync = 0L
 
 	override fun readFromNbt(tag: NbtCompound) {
 		level = tag.getInt("Level")
@@ -208,6 +211,12 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
 
 		entity.health += entity.maxHealth - oldHealth
+
+		// Sync every 500ms for players the get near the mob after it spawns
+		if(Util.getMeasuringTimeMs() - lastSync > 500) {
+			RPG_MOB.sync(entity)
+			lastSync = Util.getMeasuringTimeMs()
+		}
 	}
 
 	private fun checkAttributeModifiers(instance: EntityAttributeInstance, id: UUID, name: String, value: Double) {
