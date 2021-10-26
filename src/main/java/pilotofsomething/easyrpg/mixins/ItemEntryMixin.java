@@ -26,7 +26,7 @@ public class ItemEntryMixin {
 		if(ConfigKt.getConfig().getItems().getEnabled()) {
 			ItemStack stack = new ItemStack(item);
 			LootItemKt.addLootModifiers(context.get(LootContextParameters.THIS_ENTITY), context.get(LootContextParameters.ORIGIN),
-					stack, context.getLuck(), false);
+					stack, context.getLuck(), null);
 			lootConsumer.accept(stack);
 			ci.cancel();
 		}

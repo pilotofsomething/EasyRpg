@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "easy_rpg:iron_reroller",
+    "easy_rpg:gold_reroller",
+    "easy_rpg:diamond_reroller",
+    "easy_rpg:netherite_reroller"
+  ]
+}

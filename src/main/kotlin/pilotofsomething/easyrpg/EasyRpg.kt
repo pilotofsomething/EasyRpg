@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg
 
+import dev.emi.trinkets.api.Trinket
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ClientModInitializer
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.entity.LivingEntity
@@ -17,6 +19,7 @@ import net.minecraft.entity.attribute.ClampedEntityAttribute
 import net.minecraft.entity.attribute.EntityAttribute
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayNetworkHandler
@@ -30,6 +33,7 @@ import pilotofsomething.easyrpg.components.RPG_MOB
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.gui.StatsGui
 import pilotofsomething.easyrpg.gui.StatsScreen
+import pilotofsomething.easyrpg.item.EasyRpgItems
 import pilotofsomething.easyrpg.item.setupQualities
 import kotlin.math.max
 import kotlin.math.min
@@ -88,6 +92,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 
 		// Attack damage is set to be tracked so the WAILA plugin can estimate exp value
 		EntityAttributes.GENERIC_ATTACK_DAMAGE.isTracked = true
+		EasyRpgItems.registerItems()
 	}
 
 	override fun onInitializeClient() {
@@ -132,6 +137,13 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 		config.entities.expOptions.scalingSettings.scalingMin),
 		config.entities.expOptions.scalingSettings.scalingMax)
 	return max((base * worth * scaleFactor).toLong(), 1)
+}
+
+fun isItemTrinket(stack: ItemStack): Boolean {
+	if(FabricLoader.getInstance().isModLoaded("trinkets")) {
+		return stack.item is Trinket
+	}
+	return false
 }
 
 @Suppress("UNUSED")

@@ -25,12 +25,13 @@ import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_MOB
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.config
+import pilotofsomething.easyrpg.isItemTrinket
 import kotlin.math.*
 import kotlin.random.Random
 
 private val qualities = ArrayList<Int>()
 
-private val qualityNames = arrayOf("easyrpg.qualities.common", "easyrpg.qualities.uncommon", "easyrpg.qualities.rare", "easyrpg.qualities.epic")
+val qualityNames = arrayOf("easyrpg.qualities.common", "easyrpg.qualities.uncommon", "easyrpg.qualities.rare", "easyrpg.qualities.epic")
 
 fun setupQualities() {
 	qualities.clear()
@@ -40,13 +41,13 @@ fun setupQualities() {
 	qualities.addAll(IntArray(config.items.rarities.common.weight) { 1 }.asList())
 }
 
-fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float, crafted: Boolean) {
+fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float, craftMult: Double?) {
 	val level = when(entity) {
-		is PlayerEntity -> if(!crafted) {
+		is PlayerEntity -> if(craftMult == null) {
 			getItemLevel(entity, pos ?: Vec3d.ZERO)
 		} else {
 			val rpg = RPG_PLAYER.get(entity)
-			min(max((rpg.level * config.items.craftedLevelMult * Random.nextDouble(0.9, 1.1)).toInt(), 1), config.items.maxLevel)
+			min(max((rpg.level * craftMult * Random.nextDouble(0.9, 1.1)).toInt(), 1), config.items.maxLevel)
 		}
 		is LivingEntity -> RPG_MOB.get(entity).level
 		else -> 0
@@ -102,19 +103,17 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.RESET).formatted(Formatting.WHITE))
 		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
-	if(FabricLoader.getInstance().isModLoaded("trinkets")) {
-		if(stack.item is Trinket) {
-			val nbt = stack.orCreateNbt
-			val list = NbtList()
+	if(isItemTrinket(stack)) {
+		val nbt = stack.orCreateNbt
+		val list = NbtList()
 
-			for(i in stats.indices) {
-				list.add(getAttributeNBT(stats[i], (bonusesNorm[i] * level * config.items.spGain * spMultiplier).toInt(), null))
-			}
-
-			nbt.put("TrinketAttributeModifiers", list)
-			putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
-			putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
+		for(i in stats.indices) {
+			list.add(getAttributeNBT(stats[i], (bonusesNorm[i] * level * config.items.spGain * spMultiplier).toInt(), null))
 		}
+
+		nbt.put("TrinketAttributeModifiers", list)
+		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
+		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
 }
 

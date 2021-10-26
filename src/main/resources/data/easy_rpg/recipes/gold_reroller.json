@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+	"RIR",
+	"ILI",
+	"RIR"
+  ],
+  "key": {
+	"R": {
+	  "item": "minecraft:redstone"
+	},
+	"I": {
+	  "item": "minecraft:gold_ingot"
+	},
+	"L": {
+	  "item": "minecraft:lapis_block"
+	}
+  },
+  "result": {
+	"item": "easy_rpg:gold_reroller",
+	"count": 2
+  }
+}

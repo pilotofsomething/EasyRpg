@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+	"RIR",
+	"ILI",
+	"RIR"
+  ],
+  "key": {
+	"R": {
+	  "item": "minecraft:redstone"
+	},
+	"I": {
+	  "item": "minecraft:diamond"
+	},
+	"L": {
+	  "item": "minecraft:lapis_block"
+	}
+  },
+  "result": {
+	"item": "easy_rpg:diamond_reroller",
+	"count": 2
+  }
+}

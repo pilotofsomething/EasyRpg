@@ -14,7 +14,8 @@
 	"AbsorptionStatusEffectMixin",
 	"ItemEntryMixin",
 	"ItemStackMixin",
-	"ItemMixin"
+	"ItemMixin",
+	"SmithingScreenHandlerMixin"
   ],
   "client": [
 	"DamageParticleFactoryMixin",

@@ -199,5 +199,11 @@
   "easyrpg.waila.xp": "XP",
   "config.waila.plugin_easy_rpg_waila": "Easy RPG",
   "config.waila.plugin_easy_rpg_waila.show_levels": "Show Levels",
-  "config.waila.plugin_easy_rpg_waila.show_xp_value": "Show Entity XP value"
+  "config.waila.plugin_easy_rpg_waila.show_xp_value": "Show Entity XP value",
+  "item.easy_rpg.iron_reroller": "Iron Reroller",
+  "item.easy_rpg.gold_reroller": "Golden Reroller",
+  "item.easy_rpg.diamond_reroller": "Diamond Reroller",
+  "item.easy_rpg.netherite_reroller": "Netherite Reroller",
+  "item.easy_rpg.reroller.tooltip.line1": "Rerolls an item's level when",
+  "item.easy_rpg.reroller.tooltip.line2": "used in a Smithing Table"
 }

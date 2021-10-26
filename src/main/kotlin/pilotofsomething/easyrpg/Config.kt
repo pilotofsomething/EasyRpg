@@ -192,6 +192,14 @@ class ModConfig : ConfigData {
 		var intelligenceGain: Double = 1.0
 		var defenseGain: Double = 1.0
 
+		@ConfigEntry.Gui.Excluded
+		var rerollers = hashMapOf(
+			"easy_rpg:iron_reroller" to RerollSettings(0.6, 0.0f),
+			"easy_rpg:gold_reroller" to RerollSettings(0.8, 2.0f),
+			"easy_rpg:diamond_reroller" to RerollSettings(1.0, 4.0f),
+			"easy_rpg:netherite_reroller" to RerollSettings(1.0, 12.0f)
+		)
+
 		@ConfigEntry.Gui.CollapsibleObject
 		var rarities = Rarities()
 
@@ -210,6 +218,7 @@ class ModConfig : ConfigData {
 		}
 
 		class RaritySettings(var weight: Int, var spMultiplier: Double, var maxStatCount: Int)
+		class RerollSettings(var levelMult: Double, var luck: Float)
 	}
 
 	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var cap: Int)
