@@ -77,6 +77,8 @@
   "text.autoconfig.easyrpg.option.players.experience": "Experience Curve",
   "text.autoconfig.easyrpg.option.players.experience.base": "Base",
   "text.autoconfig.easyrpg.option.players.experience.exponent": "Exponent",
+  "text.autoconfig.easyrpg.option.players.experience.levelOffset": "Level Offset",
+  "text.autoconfig.easyrpg.option.players.experience.levelOffset.@Tooltip": "The offset of the level curve.\nDoes not reduce level requirements.",
   "text.autoconfig.easyrpg.option.players.damage": "Damage",
   "text.autoconfig.easyrpg.option.players.damage.base": "Base",
   "text.autoconfig.easyrpg.option.players.damage.gain": "Gain on Level",

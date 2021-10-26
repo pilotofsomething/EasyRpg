@@ -157,9 +157,15 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 	private var syncFlags = -1
 
-	private fun expForLevel(lvl: Int): Long {
+	private fun expCurve(lvl: Int): Long {
 		return if(lvl > 0) {
 			(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
+		} else 0
+	}
+
+	private fun expForLevel(lvl: Int): Long {
+		return if(lvl > 0) {
+			expCurve(lvl) - expCurve(config.players.experience.levelOffset)
 		} else 0
 	}
 
@@ -219,6 +225,11 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 	}
 
 	override fun serverTick() {
+		// Prevent invalid exp values by resetting the player's level if exp is less than the requirements for the
+		// previous level.
+		if(xp < expForLevel(level - 1)) {
+			level = 1
+		}
 		while(level < config.players.maxLevel && xp >= xpReqTotal) {
 			++level
 		}

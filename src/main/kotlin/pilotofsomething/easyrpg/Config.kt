@@ -164,6 +164,9 @@ class ModConfig : ConfigData {
 		class ExperienceOptions {
 			var base = 1000.0
 			var exponent = 2.4
+
+			@ConfigEntry.Gui.Tooltip
+			var levelOffset = 0
 		}
 	}
 
