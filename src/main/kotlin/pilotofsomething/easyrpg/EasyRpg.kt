@@ -109,7 +109,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 }
 
 fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
-	if(entity == null) return 0
+	if(entity == null || killedEntity is PlayerEntity) return 0
 	val pRpg = RPG_PLAYER.get(entity)
 	val mRpg = RPG_MOB.get(killedEntity)
 

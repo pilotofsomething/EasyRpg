@@ -34,7 +34,7 @@ class LivingEntityComponent : IEntityComponentProvider {
 			} else RPG_PLAYER.get(entity)
 			tooltip.addPair(TranslatableText("easyrpg.waila.level"), LiteralText(I18n.translate("%,d", rpg.level)))
 		}
-		if(config.getBoolean(Settings.showXpValue)) {
+		if(config.getBoolean(Settings.showXpValue) && entity !is PlayerEntity) {
 			val xpV = calculateExpValue(MinecraftClient.getInstance().player, entity)
 			if(xpV < 10000000000L) {
 				tooltip.addPair(TranslatableText("easyrpg.waila.xp"), LiteralText(I18n.translate("%,d", xpV)))
