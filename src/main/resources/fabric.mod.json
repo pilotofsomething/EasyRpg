@@ -28,25 +28,26 @@
       }
     ],
     "cardinal-components-entity": [
-	  "pilotofsomething.easyrpg.components.RpgPlayer::registerEntityComponentFactories",
-	  "pilotofsomething.easyrpg.components.RpgMob::registerEntityComponentFactories"
+      "pilotofsomething.easyrpg.components.RpgPlayer::registerEntityComponentFactories",
+      "pilotofsomething.easyrpg.components.RpgMob::registerEntityComponentFactories"
     ],
     "modmenu": [
-	  "pilotofsomething.easyrpg.ConfigScreen"
+      "pilotofsomething.easyrpg.ConfigScreen"
     ]
   },
   "mixins": [
     "easyrpg.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.7",
+    "fabricloader": ">=0.12.8",
     "fabric": "*",
     "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
-    "minecraft": "1.17.x",
-    "java": ">=16",
-    "cardinal-components-base": ">=3.0.0",
-    "cardinal-components-entity": ">=3.0.0",
-    "cloth-config2": ">=5.0.0"
+    "minecraft": "1.18.x",
+    "java": ">=17",
+    "cardinal-components-base": ">=4.0.0",
+    "cardinal-components-entity": ">=4.0.0",
+    "cloth-config2": ">=6.0.0",
+    "libgui": ">=5.0.0-beta"
   },
   "custom": {
     "cardinal-components": [
