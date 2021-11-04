@@ -1,7 +1,5 @@
 package pilotofsomething.easyrpg.item
 
-import dev.emi.trinkets.api.Trinket
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
@@ -42,6 +40,10 @@ fun setupQualities() {
 }
 
 fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float, craftMult: Double?) {
+	val nbt = stack.orCreateNbt
+	if(nbt.contains("EasyRpgLoot")) {
+		return
+	}
 	val level = when(entity) {
 		is PlayerEntity -> if(craftMult == null) {
 			getItemLevel(entity, pos ?: Vec3d.ZERO)
@@ -92,7 +94,6 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 
 	if(stack.item is Wearable) {
 		val slot = MobEntity.getPreferredEquipmentSlot(stack)
-		val nbt = stack.orCreateNbt
 		val list = NbtList()
 
 		for(i in stats.indices) {
@@ -104,7 +105,6 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
 	if(isItemTrinket(stack)) {
-		val nbt = stack.orCreateNbt
 		val list = NbtList()
 
 		for(i in stats.indices) {
@@ -115,6 +115,7 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
 		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
+	nbt.putBoolean("EasyRpgLoot", true)
 }
 
 private fun getAttributeNBT(stat: IRpgPlayer.Stats, value: Int, slot: EquipmentSlot?): NbtCompound {

@@ -46,6 +46,7 @@ public class SmithingScreenHandlerMixin extends ForgingScreenHandler {
 			if(settings.containsKey(Registry.ITEM.getId(input.getStack(1).getItem()).toString())) {
 				ItemStack stack = input.getStack(0).copy();
 				stack.getOrCreateNbt().remove("ItemBonuses");
+				stack.getNbt().remove("EasyRpgLoot");
 				NbtCompound display;
 				if(stack.getNbt().contains("display")) {
 					display = stack.getSubNbt("display");
