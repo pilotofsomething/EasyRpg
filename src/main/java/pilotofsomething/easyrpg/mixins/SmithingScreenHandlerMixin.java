@@ -55,7 +55,9 @@ public class SmithingScreenHandlerMixin extends ForgingScreenHandler {
 					modifiers.removeIf(element -> {
 						String name = ((NbtCompound) element).getString("Name");
 						for(IRpgPlayer.Stats stat : IRpgPlayer.Stats.values()) {
-							return name.equals(stat.name() + " item bonus");
+							if(name.equals(stat.name() + " item bonus")) {
+								return true;
+							}
 						}
 						return false;
 					});
