@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pilotofsomething.easyrpg.ConfigKt;
 import pilotofsomething.easyrpg.EasyRpgKt;
 import pilotofsomething.easyrpg.ModConfig;
+import pilotofsomething.easyrpg.components.IRpgPlayer;
 import pilotofsomething.easyrpg.item.LootItemKt;
 
 import java.util.Arrays;
@@ -48,6 +49,18 @@ public class SmithingScreenHandlerMixin extends ForgingScreenHandler {
 				stack.getOrCreateNbt().remove("ItemBonuses");
 				stack.getNbt().remove("EasyRpgLoot");
 				NbtCompound display;
+
+				if(stack.getNbt().contains("TrinketAttributeModifiers")) {
+					NbtList modifiers = stack.getNbt().getList("TrinketAttributeModifiers", NbtElement.COMPOUND_TYPE);
+					modifiers.removeIf(element -> {
+						String name = ((NbtCompound) element).getString("Name");
+						for(IRpgPlayer.Stats stat : IRpgPlayer.Stats.values()) {
+							return name.equals(stat.getStatName() + " item bonus");
+						}
+						return false;
+					});
+				}
+
 				if(stack.getNbt().contains("display")) {
 					display = stack.getSubNbt("display");
 					if(display.contains("Lore")) {
