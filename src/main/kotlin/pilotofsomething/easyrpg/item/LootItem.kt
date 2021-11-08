@@ -40,6 +40,7 @@ fun setupQualities() {
 }
 
 fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float, craftMult: Double?) {
+	if(stack.item !is Wearable && !isItemTrinket(stack)) return
 	val nbt = stack.orCreateNbt
 	if(nbt.contains("EasyRpgLoot")) {
 		return
