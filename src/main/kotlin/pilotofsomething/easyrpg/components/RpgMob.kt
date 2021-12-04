@@ -327,7 +327,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	}
 
 	override fun shouldSyncWith(player: ServerPlayerEntity): Boolean {
-		return player.distanceTo(entity) < 128
+		return player.squaredDistanceTo(entity) < 1024
 	}
 
 	companion object {

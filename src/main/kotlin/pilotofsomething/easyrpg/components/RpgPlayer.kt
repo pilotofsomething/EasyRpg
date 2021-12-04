@@ -9,6 +9,9 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.entity.attribute.EntityAttribute
 import net.minecraft.entity.attribute.EntityAttributeInstance
 import net.minecraft.entity.attribute.EntityAttributeModifier
@@ -17,9 +20,12 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
+import net.minecraft.util.Util
 import pilotofsomething.easyrpg.ScalingMode
 import pilotofsomething.easyrpg.EasyRpgAttributes
+import pilotofsomething.easyrpg.SYNC_OTHER_PLAYER
 import pilotofsomething.easyrpg.config
 import java.util.*
 import kotlin.math.abs
@@ -156,6 +162,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		}
 
 	private var syncFlags = -1
+	private var lastSync = 0 // Time last synced for players using WAILA
 
 	private fun expCurve(lvl: Int): Long {
 		return if(lvl > 0) {
@@ -275,6 +282,14 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		if(syncFlags != 0) {
 			RPG_PLAYER.sync(player)
 			syncFlags = 0
+		}
+		if(Util.getMeasuringTimeMs() - lastSync > 500) {
+			val buf = PacketByteBufs.create()
+			buf.writeUuid(player.uuid)
+			buf.writeVarInt(level)
+			for(p in PlayerLookup.around(player.world as ServerWorld, player.pos, 32.0)) {
+				if(p != player) ServerPlayNetworking.send(p, SYNC_OTHER_PLAYER, buf)
+			}
 		}
 	}
 

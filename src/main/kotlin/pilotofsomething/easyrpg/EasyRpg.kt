@@ -7,9 +7,11 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents
 import net.fabricmc.fabric.api.networking.v1.PacketSender
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.option.KeyBinding
@@ -40,6 +42,7 @@ import kotlin.math.min
 import kotlin.math.pow
 
 val ADD_STAT_ID = Identifier("easy_rpg", "change_stat")
+val SYNC_OTHER_PLAYER = Identifier("easy_rpg", "sync_other")
 
 fun registerEntityAttribute(id: String, attribute: EntityAttribute): EntityAttribute {
 	return Registry.register(Registry.ATTRIBUTE, "easy_rpg:$id", attribute)
@@ -99,6 +102,16 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 		val openStats = KeyBindingHelper.registerKeyBinding(
 			KeyBinding("easyrpg.key_bind.open_stats", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Z,
 			           "easyrpg.key_bind.category"))
+
+		ClientPlayNetworking.registerGlobalReceiver(SYNC_OTHER_PLAYER) { client, handler, buf, sender ->
+			val uuid = buf.readUuid()
+			val level = buf.readVarInt()
+			client.execute {
+				val player = client.world?.getPlayerByUuid(uuid) ?: return@execute
+				val rpg = RPG_PLAYER.get(player)
+				rpg.level = level
+			}
+		}
 
 		ClientTickEvents.END_CLIENT_TICK.register { client ->
 			if(openStats.isPressed) {
