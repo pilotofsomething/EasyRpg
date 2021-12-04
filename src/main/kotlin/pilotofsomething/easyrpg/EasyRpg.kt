@@ -103,7 +103,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 			KeyBinding("easyrpg.key_bind.open_stats", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_Z,
 			           "easyrpg.key_bind.category"))
 
-		ClientPlayNetworking.registerGlobalReceiver(SYNC_OTHER_PLAYER) { client, handler, buf, sender ->
+		ClientPlayNetworking.registerGlobalReceiver(SYNC_OTHER_PLAYER) { client, _, buf, _ ->
 			val uuid = buf.readUuid()
 			val level = buf.readVarInt()
 			client.execute {

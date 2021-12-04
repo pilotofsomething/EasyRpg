@@ -73,7 +73,7 @@ dependencies {
 
     val wthitVersion: String by project
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
-    modRuntime("mcp.mobius.waila:wthit:fabric-$wthitVersion")
+    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16
