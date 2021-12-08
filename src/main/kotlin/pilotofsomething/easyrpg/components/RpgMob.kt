@@ -162,11 +162,10 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			val healthMult = maxHealthInst!!.baseValue / 20.0
 
 			checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
-			checkAttributeModifiers(
-				toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base
-			)
+			checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", 1.0)
 			checkAttributeModifiersMultiplier(
-				toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", config.entities.toughness.gain * (level - 1)
+				toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
+				config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)
 			)
 			checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
 			checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
@@ -195,11 +194,10 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 		val healthMult = maxHealthInst!!.baseValue / 20.0
 
 		checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
-		checkAttributeModifiers(
-			toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base
-		)
+		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", 1.0)
 		checkAttributeModifiersMultiplier(
-			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", config.entities.toughness.gain * (level - 1)
+			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
+			config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)
 		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
