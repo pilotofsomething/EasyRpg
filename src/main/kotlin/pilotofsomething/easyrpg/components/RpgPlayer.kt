@@ -103,31 +103,19 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		get() = (level * config.players.spGain).toInt() - (spStr + spDex + spInt + spDef + spHealth)
 
 	private val health
-		get() = min(
-			baseHealth + (spHealth * config.players.healthOptions.spGain).toInt(),
-			config.players.healthOptions.cap
-		)
+		get() = baseHealth + (spHealth * config.players.healthOptions.spGain).toInt()
 
 	private val strength
-		get() = min(
-			baseStr + (spStr * config.players.strengthOptions.spGain).toInt(),
-			config.players.strengthOptions.cap
-		)
+		get() = baseStr + (spStr * config.players.strengthOptions.spGain).toInt()
 
 	private val dexterity
-		get() = min(
-			baseDex + (spDex * config.players.dexterityOptions.spGain).toInt(),
-			config.players.dexterityOptions.cap
-		)
+		get() = baseDex + (spDex * config.players.dexterityOptions.spGain).toInt()
 
 	private val intelligence
-		get() = min(
-			baseInt + (spInt * config.players.intelligenceOptions.spGain).toInt(),
-			config.players.intelligenceOptions.cap
-		)
+		get() = baseInt + (spInt * config.players.intelligenceOptions.spGain).toInt()
 
 	private val defense
-		get() = min(baseDef + (spDef * config.players.defenseOptions.spGain).toInt(), config.players.defenseOptions.cap)
+		get() = baseDef + (spDef * config.players.defenseOptions.spGain).toInt()
 
 	private val baseHealth
 		get() = config.players.healthOptions.base + (config.players.healthOptions.gain * (level - 1)).toInt()
@@ -265,11 +253,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 			config.players.toughness.base
 		)
 		checkAttributeModifiersMultiplier(
-			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
-			min(
-				config.players.toughness.gain * (level - 1),
-				config.players.toughness.cap
-			)
+			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", config.players.toughness.gain * (level - 1)
 		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", strength.toDouble())
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", dexterity.toDouble())

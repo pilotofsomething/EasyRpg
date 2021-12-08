@@ -34,16 +34,14 @@ public class LivingEntityMixin {
 			float damage = amount;
 
 			if(attacker instanceof PlayerEntity) {
-				damage *= Math.min(ConfigKt.config.getPlayers().getDamage().getBase()
-								+ ConfigKt.config.getPlayers().getDamage().getGain() * (rpg.getLevel() - 1),
-						ConfigKt.getConfig().getPlayers().getDamage().getCap());
+				damage *= ConfigKt.config.getPlayers().getDamage().getBase()
+								+ ConfigKt.config.getPlayers().getDamage().getGain() * (rpg.getLevel() - 1);
 				damage *= Math.max(
 						Math.pow(ConfigKt.getConfig().getPlayers().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
 						ConfigKt.getConfig().getPlayers().getDamageScaling().getLimit());
 			} else {
-				damage *= Math.min(ConfigKt.config.getEntities().getDamage().getBase()
-								+ ConfigKt.config.getEntities().getDamage().getGain() * (rpg.getLevel() - 1),
-						ConfigKt.getConfig().getEntities().getDamage().getCap());
+				damage *= ConfigKt.config.getEntities().getDamage().getBase()
+								+ ConfigKt.config.getEntities().getDamage().getGain() * (rpg.getLevel() - 1);
 				damage *= Math.max(
 						Math.pow(ConfigKt.getConfig().getEntities().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
 						ConfigKt.getConfig().getEntities().getDamageScaling().getLimit());
@@ -52,13 +50,13 @@ public class LivingEntityMixin {
 			double defense = getAttributeValue(EasyRpgAttributes.INSTANCE.getDEFENSE());
 			if(source.isMagic()) {
 				double intelligence = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getINTELLIGENCE());
-				return damage * (float) (intelligence / defense);
+				return Math.min(damage * (float) (intelligence / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
 			} else if(source.isProjectile()) {
 				double dexterity = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getDEXTERITY());
-				return damage * (float) (dexterity / defense);
+				return Math.min(damage * (float) (dexterity / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
 			} else {
 				double strength = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getSTRENGTH());
-				return damage * (float) (strength / defense);
+				return Math.min(damage * (float) (strength / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
 			}
 		}
 

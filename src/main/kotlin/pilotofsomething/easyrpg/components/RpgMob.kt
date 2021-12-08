@@ -166,9 +166,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base
 			)
 			checkAttributeModifiersMultiplier(
-				toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(
-					config.entities.toughness.gain * (level - 1), config.entities.toughness.cap
-				)
+				toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", config.entities.toughness.gain * (level - 1)
 			)
 			checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
 			checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
@@ -201,9 +199,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", config.entities.toughness.base
 		)
 		checkAttributeModifiersMultiplier(
-			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", min(
-				config.entities.toughness.gain * (level - 1), config.entities.toughness.cap
-			)
+			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness", config.entities.toughness.gain * (level - 1)
 		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
@@ -270,52 +266,37 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 	private fun getHealth(mult: Double, base: Boolean = false): Double {
 		val sp = (level * config.entities.spGain).toInt()
-		return min(
-			(config.entities.healthOptions.base +
+		return (config.entities.healthOptions.base +
 					config.entities.healthOptions.gain * (level - 1) + if(!base)
-				(config.entities.healthOptions.spGain * sp * this.spDist[0]).toInt() else 0) * mult,
-			config.entities.healthOptions.cap.toDouble()
-		)
+				(config.entities.healthOptions.spGain * sp * this.spDist[0]).toInt() else 0) * mult
 	}
 
 	private fun getStr(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
-		return min(
-			(config.entities.strengthOptions.base +
+		return (config.entities.strengthOptions.base +
 					config.entities.strengthOptions.gain * (level - 1)).toInt() + if(!base)
-				(config.entities.strengthOptions.spGain * sp * this.spDist[1]).toInt() else 0,
-			config.entities.strengthOptions.cap
-		)
+				(config.entities.strengthOptions.spGain * sp * this.spDist[1]).toInt() else 0
 	}
 
 	private fun getDex(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
-		return min(
-			(config.entities.dexterityOptions.base +
+		return (config.entities.dexterityOptions.base +
 					config.entities.dexterityOptions.gain * (level - 1)).toInt() + if(!base)
-				(config.entities.dexterityOptions.spGain * sp * this.spDist[2]).toInt() else 0,
-			config.entities.dexterityOptions.cap
-		)
+				(config.entities.dexterityOptions.spGain * sp * this.spDist[2]).toInt() else 0
 	}
 
 	private fun getInt(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
-		return min(
-			(config.entities.intelligenceOptions.base +
+		return (config.entities.intelligenceOptions.base +
 					config.entities.intelligenceOptions.gain * (level - 1)).toInt() + if(!base)
-				(config.entities.intelligenceOptions.spGain * sp * this.spDist[3]).toInt() else 0,
-			config.entities.intelligenceOptions.cap
-		)
+				(config.entities.intelligenceOptions.spGain * sp * this.spDist[3]).toInt() else 0
 	}
 
 	private fun getDef(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
-		return min(
-			(config.entities.defenseOptions.base +
+		return (config.entities.defenseOptions.base +
 					config.entities.defenseOptions.gain * (level - 1)).toInt() + if(!base)
-				(config.entities.defenseOptions.spGain * sp * this.spDist[4]).toInt() else 0,
-			config.entities.defenseOptions.cap
-		)
+				(config.entities.defenseOptions.spGain * sp * this.spDist[4]).toInt() else 0
 	}
 
 	override fun writeSyncPacket(buf: PacketByteBuf, recipient: ServerPlayerEntity) {

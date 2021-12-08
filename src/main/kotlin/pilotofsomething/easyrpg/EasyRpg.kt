@@ -159,6 +159,18 @@ fun isItemTrinket(stack: ItemStack): Boolean {
 	return false
 }
 
+fun getAttributeMax(attribute: ClampedEntityAttribute): Double {
+	return when(attribute) {
+		EntityAttributes.GENERIC_MAX_HEALTH -> config.statCaps.hpCap.toDouble()
+		EntityAttributes.GENERIC_ARMOR_TOUGHNESS -> config.statCaps.armorToughnessCap.toDouble()
+		EasyRpgAttributes.STRENGTH -> config.statCaps.strCap.toDouble()
+		EasyRpgAttributes.DEXTERITY -> config.statCaps.dexCap.toDouble()
+		EasyRpgAttributes.INTELLIGENCE -> config.statCaps.intCap.toDouble()
+		EasyRpgAttributes.DEFENSE -> config.statCaps.defCap.toDouble()
+		else -> attribute.maxValue
+	}
+}
+
 @Suppress("UNUSED")
 enum class ScalingMode(val distance: Boolean, val time: Boolean, val level: Boolean) {
 	DISTANCE(true, false, false),
