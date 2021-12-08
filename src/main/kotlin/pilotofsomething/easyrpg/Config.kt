@@ -18,7 +18,7 @@ class ModConfig : ConfigData {
 	@ConfigEntry.Gui.TransitiveObject
 	var client = ClientOptions()
 
-	@ConfigEntry.Category("Stat Caps")
+	@ConfigEntry.Category("StatCaps")
 	@ConfigEntry.Gui.TransitiveObject
 	var statCaps = StatCapOptions()
 
