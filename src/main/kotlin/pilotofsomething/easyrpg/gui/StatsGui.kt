@@ -18,7 +18,7 @@ import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.config
 
 class StatsScreen(desc: GuiDescription) : CottonClientScreen(desc) {
-	override fun isPauseScreen(): Boolean {
+	override fun shouldPause(): Boolean {
 		return false
 	}
 }
