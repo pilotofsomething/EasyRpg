@@ -149,7 +149,7 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 			mRpg.level - pRpg.level),
 		config.entities.expOptions.scalingSettings.scalingMin),
 		config.entities.expOptions.scalingSettings.scalingMax)
-	return max((base * worth * scaleFactor).toLong(), 1)
+	return min(max((base * worth * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap)
 }
 
 fun isItemTrinket(stack: ItemStack): Boolean {

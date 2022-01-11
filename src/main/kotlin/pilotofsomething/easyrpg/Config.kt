@@ -132,6 +132,7 @@ class ModConfig : ConfigData {
 				var exponentialDecreaseAmount = 1.0
 				var scalingMax = 3.0
 				var scalingMin = 0.1
+				var expCap = Long.MAX_VALUE
 			}
 		}
 	}
