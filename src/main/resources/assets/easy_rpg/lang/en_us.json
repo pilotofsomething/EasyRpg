@@ -52,6 +52,7 @@
   "text.autoconfig.easyrpg.option.entities.expOptions": "Experience",
   "text.autoconfig.easyrpg.option.entities.expOptions.baseValue": "Base Value",
   "text.autoconfig.easyrpg.option.entities.expOptions.exponent": "Exponent",
+  "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.expCap": "Experience Cap",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers": "Experience Modifiers",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.health": "Health",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.health.base": "Base Value",
