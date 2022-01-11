@@ -159,7 +159,7 @@ fun isItemTrinket(stack: ItemStack): Boolean {
 	return false
 }
 
-fun getAttributeMax(attribute: ClampedEntityAttribute): Double {
+fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {
 	return when(attribute) {
 		EntityAttributes.GENERIC_MAX_HEALTH -> config.statCaps.hpCap.toDouble()
 		EntityAttributes.GENERIC_ARMOR_TOUGHNESS -> config.statCaps.armorToughnessCap.toDouble()
@@ -167,7 +167,7 @@ fun getAttributeMax(attribute: ClampedEntityAttribute): Double {
 		EasyRpgAttributes.DEXTERITY -> config.statCaps.dexCap.toDouble()
 		EasyRpgAttributes.INTELLIGENCE -> config.statCaps.intCap.toDouble()
 		EasyRpgAttributes.DEFENSE -> config.statCaps.defCap.toDouble()
-		else -> attribute.maxValue
+		else -> null
 	}
 }
 
