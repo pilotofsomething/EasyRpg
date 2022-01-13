@@ -1,6 +1,7 @@
 package pilotofsomething.easyrpg
 
 import dev.emi.trinkets.api.Trinket
+import dev.emi.trinkets.api.TrinketsApi
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ClientModInitializer
@@ -154,7 +155,7 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 
 fun isItemTrinket(stack: ItemStack): Boolean {
 	if(FabricLoader.getInstance().isModLoaded("trinkets")) {
-		return stack.item is Trinket
+		return stack.item is Trinket || TrinketsApi.getTrinket(stack.item) != TrinketsApi.getDefaultTrinket()
 	}
 	return false
 }

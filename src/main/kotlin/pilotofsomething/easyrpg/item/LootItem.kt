@@ -102,8 +102,6 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 		}
 
 		nbt.put("ItemBonuses", list)
-		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.RESET).formatted(Formatting.WHITE))
-		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
 	if(isItemTrinket(stack)) {
 		val list = NbtList()
@@ -113,9 +111,9 @@ fun addLootModifiers(entity: Entity?, pos: Vec3d?, stack: ItemStack, luck: Float
 		}
 
 		nbt.put("TrinketAttributeModifiers", list)
-		putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
-		putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	}
+	putItemTooltip(stack, TranslatableText("easyrpg.items.tooltip.level", level).formatted(Formatting.WHITE))
+	putItemTooltip(stack, TranslatableText(qualityNames[quality - 1]))
 	nbt.putBoolean("EasyRpgLoot", true)
 }
 
