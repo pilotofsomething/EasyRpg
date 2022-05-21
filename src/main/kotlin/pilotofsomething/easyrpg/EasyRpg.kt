@@ -150,7 +150,6 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 					2 -> serverConfig.items = Gson().fromJson(json, ModConfig.ItemOptions::class.java)
 					3 -> serverConfig.entities = Gson().fromJson(json, ModConfig.EntitiesOptions::class.java)
 				}
-				println("Packet $id received, length ${json.length} chars")
 			}
 		}
 
