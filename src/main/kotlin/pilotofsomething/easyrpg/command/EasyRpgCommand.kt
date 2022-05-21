@@ -1,9 +1,12 @@
 package pilotofsomething.easyrpg.command
 
+import com.google.gson.Gson
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import me.shedaniel.autoconfig.AutoConfig
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.command.argument.EntityArgumentType
 import net.minecraft.server.command.CommandManager.literal
@@ -14,6 +17,7 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import pilotofsomething.easyrpg.ModConfig
+import pilotofsomething.easyrpg.SYNC_CONFIG
 import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.config
@@ -104,6 +108,28 @@ object EasyRpgCommand {
 					val holder = AutoConfig.getConfigHolder(ModConfig::class.java)
 					val result = holder.load()
 					config = holder.get()
+
+					val bufPlayers = PacketByteBufs.create()
+					val bufEntities = PacketByteBufs.create()
+					val bufItems = PacketByteBufs.create()
+					val bufLimits = PacketByteBufs.create()
+
+					bufPlayers.writeVarInt(0)
+					bufPlayers.writeString(Gson().toJson(config.players))
+					bufLimits.writeVarInt(1)
+					bufLimits.writeString(Gson().toJson(config.statCaps))
+					bufItems.writeVarInt(2)
+					bufItems.writeString(Gson().toJson(config.items))
+					bufEntities.writeVarInt(3)
+					bufEntities.writeString(Gson().toJson(config.entities))
+
+					for(p in context.source.server.playerManager.playerList) {
+						ServerPlayNetworking.send(p, SYNC_CONFIG, bufPlayers)
+						ServerPlayNetworking.send(p, SYNC_CONFIG, bufLimits)
+						ServerPlayNetworking.send(p, SYNC_CONFIG, bufItems)
+						ServerPlayNetworking.send(p, SYNC_CONFIG, bufEntities)
+					}
+
 					if(result) {
 						context.source.sendFeedback(TranslatableText("easyrpg.command.reload.success"), true)
 						1

@@ -11,6 +11,8 @@ import pilotofsomething.easyrpg.item.setupQualities
 
 lateinit var config: ModConfig
 
+val serverConfig = ModConfig()
+
 @Config(name = "easyrpg")
 class ModConfig : ConfigData {
 

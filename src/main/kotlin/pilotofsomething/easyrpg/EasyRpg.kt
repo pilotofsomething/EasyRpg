@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg
 
+import com.google.gson.Gson
 import dev.emi.trinkets.api.Trinket
 import dev.emi.trinkets.api.TrinketsApi
 import me.shedaniel.autoconfig.AutoConfig
@@ -8,13 +9,14 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents
-import net.fabricmc.fabric.api.networking.v1.PacketSender
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.fabricmc.fabric.api.networking.v1.*
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.entity.LivingEntity
@@ -44,6 +46,7 @@ import kotlin.math.pow
 
 val ADD_STAT_ID = Identifier("easy_rpg", "change_stat")
 val SYNC_OTHER_PLAYER = Identifier("easy_rpg", "sync_other")
+val SYNC_CONFIG = Identifier("easy_rpg", "sync_config")
 
 fun registerEntityAttribute(id: String, attribute: EntityAttribute): EntityAttribute {
 	return Registry.register(Registry.ATTRIBUTE, "easy_rpg:$id", attribute)
@@ -71,6 +74,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 	override fun onInitialize() {
 		AutoConfig.register(ModConfig::class.java, ::GsonConfigSerializer)
 		config = AutoConfig.getConfigHolder(ModConfig::class.java).config
+		serverConfig.client = config.client
 		setupQualities()
 
 		ServerPlayNetworking.registerGlobalReceiver(
@@ -88,6 +92,28 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 				val pRpg = RPG_PLAYER.get(entity)
 				pRpg.addXP(calculateExpValue(entity, killedEntity))
 			}
+		}
+
+		ServerPlayConnectionEvents.JOIN.register { _: ServerPlayNetworkHandler, sender: PacketSender, _: MinecraftServer ->
+			var buf = PacketByteBufs.create()
+			buf.writeVarInt(0)
+			buf.writeString(Gson().toJson(config.players))
+			sender.sendPacket(SYNC_CONFIG, buf)
+
+			buf = PacketByteBufs.create()
+			buf.writeVarInt(1)
+			buf.writeString(Gson().toJson(config.statCaps))
+			sender.sendPacket(SYNC_CONFIG, buf)
+
+			buf = PacketByteBufs.create()
+			buf.writeVarInt(2)
+			buf.writeString(Gson().toJson(config.items))
+			sender.sendPacket(SYNC_CONFIG, buf)
+
+			buf = PacketByteBufs.create()
+			buf.writeVarInt(3)
+			buf.writeString(Gson().toJson(config.entities))
+			sender.sendPacket(SYNC_CONFIG, buf)
 		}
 
 		CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
@@ -111,6 +137,33 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 				val player = client.world?.getPlayerByUuid(uuid) ?: return@execute
 				val rpg = RPG_PLAYER.get(player)
 				rpg.level = level
+			}
+		}
+
+		ClientPlayNetworking.registerGlobalReceiver(SYNC_CONFIG) { client: MinecraftClient, _: ClientPlayNetworkHandler, buf: PacketByteBuf, _: PacketSender ->
+			val id = buf.readVarInt()
+			val json = buf.readString()
+			client.execute {
+				when(id) {
+					0 -> serverConfig.players = Gson().fromJson(json, ModConfig.PlayerOptions::class.java)
+					1 -> serverConfig.statCaps = Gson().fromJson(json, ModConfig.StatCapOptions::class.java)
+					2 -> serverConfig.items = Gson().fromJson(json, ModConfig.ItemOptions::class.java)
+					3 -> serverConfig.entities = Gson().fromJson(json, ModConfig.EntitiesOptions::class.java)
+				}
+				println("Packet $id received, length ${json.length} chars")
+			}
+		}
+
+		ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler, _: PacketSender, client: MinecraftClient ->
+			client.execute {
+				config = serverConfig
+			}
+		}
+
+		ClientPlayConnectionEvents.DISCONNECT.register { _: ClientPlayNetworkHandler, client: MinecraftClient ->
+			client.execute {
+				val holder = AutoConfig.getConfigHolder(ModConfig::class.java)
+				config = holder.get()
 			}
 		}
 
