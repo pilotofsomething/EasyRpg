@@ -9,8 +9,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pilotofsomething.easyrpg.EasyRpgAttributes;
+import pilotofsomething.easyrpg.EasyRpgKt;
 import pilotofsomething.easyrpg.components.IRpgEntity;
 import pilotofsomething.easyrpg.ConfigKt;
 import pilotofsomething.easyrpg.components.RpgMobKt;
@@ -85,6 +87,11 @@ public class LivingEntityMixin {
 				.add(EasyRpgAttributes.INSTANCE.getDEFENSE());
 	}
 
+	@Redirect(method = "dropXp()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getXpToDrop(Lnet/minecraft/entity/player/PlayerEntity;)I"))
+	private int scaleVanillaExp(LivingEntity instance, PlayerEntity player) {
+		return EasyRpgKt.calculateVanillaExpValue(player, instance, getXpToDrop(player));
+	}
+
 	@Shadow
 	public float getMaxHealth() {
 		return 0f;
@@ -100,4 +107,6 @@ public class LivingEntityMixin {
 		return 0.0;
 	}
 
+	@Shadow
+	protected int getXpToDrop(PlayerEntity player) { return 0; }
 }

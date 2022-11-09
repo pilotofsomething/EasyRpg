@@ -176,6 +176,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 
 fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	if(entity == null || killedEntity is PlayerEntity) return 0
+	if(config.players.experience.useVanillaExp) return 0
 	val pRpg = RPG_PLAYER.get(entity)
 	val mRpg = RPG_MOB.get(killedEntity)
 
@@ -188,21 +189,49 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	val armor = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)?.value ?: 0.0
 
 	val mobID = Registry.ENTITY_TYPE.getId(killedEntity.type).toString()
-	val worth = if(config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
+	val worth = if (config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
 		config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
 	} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
 			(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
 			(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
 
-	val scaleFactor = min(max(
-		(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if(mRpg.level - pRpg.level > 0) {
-			config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
-				mRpg.level - pRpg.level)
-		} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
-			mRpg.level - pRpg.level),
-		config.entities.expOptions.scalingSettings.scalingMin),
-		config.entities.expOptions.scalingSettings.scalingMax)
+	val scaleFactor = min(
+		max(
+			(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if (mRpg.level - pRpg.level > 0) {
+				config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
+					mRpg.level - pRpg.level
+				)
+			} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
+				mRpg.level - pRpg.level
+			),
+			config.entities.expOptions.scalingSettings.scalingMin
+		),
+		config.entities.expOptions.scalingSettings.scalingMax
+	)
 	return min(max((base * worth * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap)
+}
+
+fun calculateVanillaExpValue(entity: PlayerEntity?, killedEntity: LivingEntity, xp: Int): Int {
+	if(entity == null || killedEntity is PlayerEntity) return xp
+	if(!config.entities.expOptions.scalingSettings.scaleVanillaExp) return xp
+
+	val pRpg = RPG_PLAYER.get(entity)
+	val mRpg = RPG_MOB.get(killedEntity)
+
+	val scaleFactor = min(
+		max(
+			(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if (mRpg.level - pRpg.level > 0) {
+				config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
+					mRpg.level - pRpg.level
+				)
+			} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
+				mRpg.level - pRpg.level
+			),
+			config.entities.expOptions.scalingSettings.scalingMin
+		),
+		config.entities.expOptions.scalingSettings.scalingMax
+	)
+	return min(max((xp * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap).toInt()
 }
 
 fun isItemTrinket(stack: ItemStack): Boolean {

@@ -135,6 +135,8 @@ class ModConfig : ConfigData {
 				var scalingMax = 3.0
 				var scalingMin = 0.1
 				var expCap = Long.MAX_VALUE
+
+				var scaleVanillaExp = false
 			}
 		}
 	}
@@ -187,6 +189,9 @@ class ModConfig : ConfigData {
 
 			@ConfigEntry.Gui.Tooltip
 			var advancedExpCurve = ""
+
+			@ConfigEntry.Gui.Tooltip
+			var useVanillaExp = false
 		}
 	}
 
