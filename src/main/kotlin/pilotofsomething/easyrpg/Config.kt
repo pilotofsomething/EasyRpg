@@ -184,6 +184,9 @@ class ModConfig : ConfigData {
 
 			@ConfigEntry.Gui.Tooltip
 			var levelOffset = 0
+
+			@ConfigEntry.Gui.Tooltip
+			var advancedExpCurve = ""
 		}
 	}
 

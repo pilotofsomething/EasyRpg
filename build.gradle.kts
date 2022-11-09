@@ -74,6 +74,9 @@ dependencies {
     val wthitVersion: String by project
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
     modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion")
+
+    modImplementation("com.ezylang:EvalEx:3.0.1")
+    include("com.ezylang:EvalEx:3.0.1")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_17
@@ -88,7 +91,7 @@ tasks {
         sourceCompatibility = javaVersion.toString()
         targetCompatibility = javaVersion.toString()
     }
-    jar { from("LICENSE") }
+    jar { from("LICENSE", "LICENSE_EvalEx") }
     processResources {
         inputs.property("version", project.version)
         filesMatching("fabric.mod.json") { expand(mutableMapOf("version" to project.version)) }

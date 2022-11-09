@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg.components
 
+import com.ezylang.evalex.Expression
 import dev.onyxstudios.cca.api.v3.component.Component
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
@@ -154,7 +155,11 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 	private fun expCurve(lvl: Int): Long {
 		return if(lvl > 0) {
-			(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
+			if(config.players.experience.advancedExpCurve.isBlank()) {
+				(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
+			} else {
+				Expression(config.players.experience.advancedExpCurve).with("level", lvl).evaluate().numberValue.toLong()
+			}
 		} else 0
 	}
 
