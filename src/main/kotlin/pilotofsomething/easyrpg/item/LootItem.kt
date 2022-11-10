@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg.item
 
+import com.ezylang.evalex.Expression
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
@@ -17,8 +18,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.registry.Registry
-import pilotofsomething.easyrpg.ScaleSettingOperation
-import pilotofsomething.easyrpg.ScalingMode
 import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_MOB
 import pilotofsomething.easyrpg.components.RPG_PLAYER
@@ -144,56 +143,13 @@ private fun putItemTooltip(stack: ItemStack, tooltip: Text) {
 
 private fun getItemLevel(player: PlayerEntity, pos: Vec3d): Int {
 	val rpg = RPG_PLAYER.get(player)
-	val scaleMode = config.items.scaleMode
 
-	val dist = if(scaleMode.distance) {
-		1 + sqrt(pos.squaredDistanceTo(0.0, pos.y, 0.0)) / config.items.scaleSettings.distanceDivisor
-	} else 0.0
-
-	val wTime = if(!scaleMode.time) 0L else rpg.timer
-	val time = if(scaleMode.time) {
-		if(config.items.scaleSettings.timeSettings.multiplier != -1L) {
-			1 + wTime / config.items.scaleSettings.timeSettings.multiplier.toDouble()
-		} else 1.0
-	} else 1.0
-	val timeLinear = if(scaleMode.time) {
-		if(config.items.scaleSettings.timeSettings.multiplier != -1L) {
-			wTime / config.items.scaleSettings.timeSettings.linear.toDouble()
-		} else 0.0
-	} else 0.0
-
+	val dist = sqrt(pos.squaredDistanceTo(0.0, pos.y, 0.0))
+	val wTime = rpg.timer
 	val level = rpg.level.toDouble()
-	val levelRatio =
-		if(scaleMode.level && (scaleMode.time || scaleMode.distance)) config.items.scaleSettings.levelRatio else 1.0
 
 	val dimensionId = player.world.registryKey.value.toString()
-	val rules = config.items.scaleSettings.dimensionSettings[dimensionId]
+	val rules = config.items.levelFormula[dimensionId] ?: config.items.levelFormula["default"] ?: "1"
 
-	val base = rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.ADD) it.value else 0.0 } ?: 0.0
-	val distMult =
-		rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_DISTANCE) it.value else 1.0 }
-			?: 1.0
-	val totalMult =
-		rules?.map { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_TOTAL) it.value else 1.0 }
-			?.reduceOrNull { acc, v -> acc * v } ?: 1.0
-	val minimum = rules?.maxOfOrNull {
-		if(it.operation == ScaleSettingOperation.Operation.MINIMUM) max(
-			it.value, 1.0
-		) else Double.NEGATIVE_INFINITY
-	} ?: 1.0
-	val maximum = rules?.minOfOrNull {
-		if(it.operation == ScaleSettingOperation.Operation.MAXIMUM) min(
-			it.value, config.items.maxLevel.toDouble()
-		) else Double.POSITIVE_INFINITY
-	} ?: config.items.maxLevel.toDouble()
-
-	return when {
-		scaleMode.distance && !scaleMode.level && !scaleMode.time -> max(
-			min(Random.nextDouble(0.9, 1.1) * (base + (dist * distMult * totalMult)), maximum), minimum
-		).toInt()
-		scaleMode == ScalingMode.LEVEL -> max(min(Random.nextDouble(0.9, 1.1) * level, maximum), minimum).toInt()
-		else -> max(
-			min(Random.nextDouble(0.9, 1.1) * (base + level * levelRatio + (timeLinear + (dist * distMult)) * time * totalMult), maximum), minimum
-		).toInt()
-	}
+	return Expression(rules).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
 }

@@ -252,14 +252,3 @@ fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {
 		else -> null
 	}
 }
-
-@Suppress("UNUSED")
-enum class ScalingMode(val distance: Boolean, val time: Boolean, val level: Boolean) {
-	DISTANCE(true, false, false),
-	DISTANCE_TIME(true, true, false),
-	TIME(false, true, false),
-	LEVEL(false, false, true),
-	LEVEL_TIME(false, true, true),
-	LEVEL_DISTANCE(true, false, true),
-	LEVEL_DISTANCE_TIME(true, true, true)
-}

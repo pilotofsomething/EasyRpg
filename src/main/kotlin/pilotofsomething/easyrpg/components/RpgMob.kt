@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg.components
 
+import com.ezylang.evalex.Expression
 import dev.onyxstudios.cca.api.v3.component.Component
 import dev.onyxstudios.cca.api.v3.component.ComponentKey
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry
@@ -18,8 +19,6 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
-import pilotofsomething.easyrpg.ScaleSettingOperation
-import pilotofsomething.easyrpg.ScalingMode
 import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.config
 import java.util.*
@@ -70,24 +69,10 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	}
 
 	private fun getEntityLevel(): Int {
-		val scaleMode = config.entities.scaleMode
-
-		val dist = if(scaleMode.distance) {
-			1 + sqrt(entity.squaredDistanceTo(0.0, entity.y, 0.0)) / config.entities.scaleModeSettings.distanceDivisor
-		} else 0.0
+		val dist = 1 + sqrt(entity.squaredDistanceTo(0.0, entity.y, 0.0))
 
 		val players = entity.world.players.filter { player -> player.distanceTo(entity) < 128f }
-		val wTime = if(players.isEmpty() || !scaleMode.time) 0L else getWeightedTime(players)
-		val time = if(scaleMode.time) {
-			if(config.entities.scaleModeSettings.timeSettings.multiplier != -1L) {
-				1 + wTime / config.entities.scaleModeSettings.timeSettings.multiplier.toDouble()
-			} else 1.0
-		} else 1.0
-		val timeLinear = if(scaleMode.time) {
-			if(config.entities.scaleModeSettings.timeSettings.multiplier != -1L) {
-				wTime / config.entities.scaleModeSettings.timeSettings.linear.toDouble()
-			} else 0.0
-		} else 0.0
+		val wTime = if(players.isEmpty()) 0L else getWeightedTime(players)
 
 		val level = when {
 			players.isEmpty() -> 0.0
@@ -101,40 +86,12 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				distances.sumOf { d -> (1 - d.second / totalDistance) * d.first.level }
 			}
 		}
-		val levelRatio =
-			if(scaleMode.level && (scaleMode.time || scaleMode.distance)) config.entities.scaleModeSettings.levelRatio else 1.0
 
 		val dimensionId = entity.world.registryKey.value.toString()
-		val rules = config.entities.scaleModeSettings.dimensionSettings[dimensionId]
+		val rules = config.entities.levelFormula[dimensionId] ?: config.entities.levelFormula["default"] ?: "1"
 
-		val base = rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.ADD) it.value else 0.0 } ?: 0.0
-		val distMult =
-			rules?.sumOf { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_DISTANCE) it.value else 1.0 }
-				?: 1.0
-		val totalMult =
-			rules?.map { if(it.operation == ScaleSettingOperation.Operation.MULTIPLY_TOTAL) it.value else 1.0 }
-				?.reduceOrNull { acc, v -> acc * v } ?: 1.0
-		val minimum = rules?.maxOfOrNull {
-			if(it.operation == ScaleSettingOperation.Operation.MINIMUM) max(
-				it.value, 1.0
-			) else Double.NEGATIVE_INFINITY
-		} ?: 1.0
-		val maximum = rules?.minOfOrNull {
-			if(it.operation == ScaleSettingOperation.Operation.MAXIMUM) min(
-				it.value, config.entities.maxLevel.toDouble()
-			) else Double.POSITIVE_INFINITY
-		} ?: config.entities.maxLevel.toDouble()
-
-		return when {
-			scaleMode.distance && !scaleMode.level && !scaleMode.time -> max(
-				min(Random.nextDouble(0.9, 1.1) * (base + (dist * distMult * totalMult)), maximum), minimum
-			).toInt()
-			players.isEmpty() -> -1
-			scaleMode == ScalingMode.LEVEL -> max(min(Random.nextDouble(0.9, 1.1) * level, maximum), minimum).toInt()
-			else -> max(
-				min(Random.nextDouble(0.9, 1.1) * (base + level * levelRatio + (timeLinear + (dist * distMult)) * time * totalMult), maximum), minimum
-			).toInt()
-		}
+		if(level == 0.0 || wTime == 0L) return -1
+		return Expression(rules).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
 	}
 
 	override fun serverTick() {

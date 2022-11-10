@@ -8,8 +8,6 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -24,7 +22,6 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
-import pilotofsomething.easyrpg.ScalingMode
 import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.SYNC_OTHER_PLAYER
 import pilotofsomething.easyrpg.config
@@ -59,8 +56,6 @@ interface IRpgPlayer : IRpgEntity, Component, ServerTickingComponent, AutoSynced
 	val remainingSP: Int
 
 	var timer: Long
-		@Environment(EnvType.SERVER) get
-		@Environment(EnvType.SERVER) set
 
 	fun getStat(stat: Stats): Int
 	fun addPoints(stat: Stats, amt: Int)
@@ -88,7 +83,6 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 	override var absorptionAmount = 0
 
-	@Environment(EnvType.SERVER)
 	override var timer = 0L // Used for scaling modes that scale over time
 
 	override val xpForLevel
@@ -234,11 +228,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 			++level
 		}
 
-		if(config.entities.scaleMode == ScalingMode.TIME || config.entities.scaleMode == ScalingMode.LEVEL_TIME ||
-			config.entities.scaleMode == ScalingMode.DISTANCE_TIME || config.entities.scaleMode == ScalingMode.LEVEL_DISTANCE_TIME
-		) {
-			++timer
-		}
+		++timer
 
 		val maxHealthInst = player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
 		val toughnessInst = player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)

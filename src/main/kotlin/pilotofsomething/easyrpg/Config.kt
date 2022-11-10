@@ -52,11 +52,8 @@ class ModConfig : ConfigData {
 	}
 
 	class EntitiesOptions {
-		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-		var scaleMode = ScalingMode.LEVEL_DISTANCE
-
-		@ConfigEntry.Gui.CollapsibleObject
-		var scaleModeSettings = ScaleModeSettings()
+		@ConfigEntry.Gui.Excluded
+		var levelFormula = defaultLevelFormula()
 
 		var maxLevel: Int = 999
 
@@ -201,11 +198,8 @@ class ModConfig : ConfigData {
 
 		var craftedLevelMult: Double = 0.5
 
-		@ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-		var scaleMode = ScalingMode.LEVEL_DISTANCE
-
-		@ConfigEntry.Gui.CollapsibleObject
-		var scaleSettings = ScaleModeSettings()
+		@ConfigEntry.Gui.Excluded
+		var levelFormula = defaultLevelFormula()
 
 		var maxLevel: Int = 999
 
@@ -249,52 +243,15 @@ class ModConfig : ConfigData {
 	class StatOptions(var base: Int, var gain: Double, var spGain: Double)
 	class StatOptionsNoSp(var base: Double, var gain: Double)
 	class DamageScalingOptions(var amount: Double, var limit: Double)
-
-	class ScaleModeSettings {
-		@ConfigEntry.Gui.Tooltip
-		var distanceDivisor = 120.0
-
-		@ConfigEntry.Gui.Tooltip
-		var levelRatio = 0.5
-
-		@ConfigEntry.Gui.CollapsibleObject
-		var timeSettings = TimeSettings()
-
-		@ConfigEntry.Gui.Excluded
-		var dimensionSettings = hashMapOf(
-			"minecraft:overworld" to arrayListOf(
-				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
-			),
-			"minecraft:the_nether" to arrayListOf(
-				ScaleSettingOperation(ScaleSettingOperation.Operation.MULTIPLY_DISTANCE, 8.0),
-				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 1.0)
-			),
-			"minecraft:the_end" to arrayListOf(
-				ScaleSettingOperation(ScaleSettingOperation.Operation.ADD, 75.0),
-				ScaleSettingOperation(ScaleSettingOperation.Operation.MINIMUM, 75.0)
-			)
-		)
-
-		class TimeSettings {
-			@ConfigEntry.Gui.Tooltip
-			var linear = 120000L
-
-			@ConfigEntry.Gui.Tooltip
-			var multiplier = 480000L
-		}
-	}
 }
 
-class ScaleSettingOperation(var operation: Operation, var value: Double) {
-	constructor() : this(Operation.ADD, 0.0)
-
-	enum class Operation {
-		ADD,
-		MULTIPLY_DISTANCE,
-		MULTIPLY_TOTAL,
-		MINIMUM,
-		MAXIMUM
-	}
+private fun defaultLevelFormula(): HashMap<String, String> {
+	return hashMapOf(
+		"minecraft:overworld" to "MAX(0.5 * level + 0.5 * distance / 120, 1)",
+		"minecraft:the_nether" to "MAX(0.5 * level + 0.5 * distance / 15, 1)",
+		"minecraft:the_end" to "MAX((0.5 * level) + (0.5 * distance / 120) + 75, 75)",
+		"default" to "MAX(0.5 * level + 0.5 * distance / 120, 1)"
+	)
 }
 
 class ConfigScreen : ModMenuApi {
