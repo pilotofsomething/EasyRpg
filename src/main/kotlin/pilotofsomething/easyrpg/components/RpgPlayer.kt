@@ -39,10 +39,15 @@ interface IRpgEntity {
 
 	companion object {
 		val HEALTH_MODIFIER = UUID.fromString("3682f2f3-78f3-412a-9b1b-63804d3bafb8")!!
+		val HEALTH_MULTIPLIER = UUID.fromString("c533c125-348f-4776-bf0e-e12637a05573")!!
 		val STRENGTH_MODIFIER = UUID.fromString("8290e5a2-bdcb-4470-a81b-f113bead54d8")!!
+		val STRENGTH_MULTIPLIER = UUID.fromString("61fe7cb3-b8c3-4f57-9462-8d30a5a97fe5")!!
 		val DEXTERITY_MODIFIER = UUID.fromString("488be99a-8a8c-4a82-8540-451f73129afd")!!
+		val DEXTERITY_MULTIPLIER = UUID.fromString("12c466cb-6be6-445f-b284-b005501c445b")!!
 		val INTELLIGENCE_MODIFIER = UUID.fromString("455326ca-2d2d-4b38-8340-407c8edccf6d")!!
+		val INTELLIGENCE_MULTIPLIER = UUID.fromString("d411a5c0-f628-4939-9d03-f1a2b479c95e")!!
 		val DEFENSE_MODIFIER = UUID.fromString("96381eb5-a2e4-4ce6-9a96-7d21efdae8c7")!!
+		val DEFENSE_MULTIPLIER = UUID.fromString("cc8e80c1-1933-47c5-bacc-e85c2df7de3d")!!
 		val BASE_TOUGHNESS = UUID.fromString("f98871c0-a885-43ec-9a94-7da489775329")!!
 		val TOUGHNESS_MODIFIER = UUID.fromString("d1eea2f1-e79a-4c20-8e29-4fb924381565")!!
 	}
@@ -111,6 +116,21 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 	private val defense
 		get() = baseDef + (spDef * config.players.defenseOptions.spGain).toInt()
+
+	private val healthMult
+		get() = config.players.healthOptions.multGain * (level - 1) + config.players.healthOptions.multiSpGain * spHealth
+
+	private val strMult
+		get() = config.players.strengthOptions.multGain * (level - 1) + config.players.strengthOptions.multiSpGain * spStr
+
+	private val dexMult
+		get() = config.players.dexterityOptions.multGain * (level - 1) + config.players.dexterityOptions.multiSpGain * spDex
+
+	private val intMult
+		get() = config.players.intelligenceOptions.multGain * (level - 1) + config.players.intelligenceOptions.multiSpGain * spInt
+
+	private val defMult
+		get() = config.players.defenseOptions.multGain * (level - 1) + config.players.defenseOptions.multiSpGain * spDef
 
 	private val baseHealth
 		get() = config.players.healthOptions.base + (config.players.healthOptions.gain * (level - 1)).toInt()
@@ -243,18 +263,23 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		defInst!!.baseValue = baseDef.toDouble()
 
 		checkAttributeModifiers(maxHealthInst!!, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", health.toDouble())
+		checkAttributeModifiersMultiplier(maxHealthInst, IRpgEntity.HEALTH_MULTIPLIER, "Easy RPG Health Mult", healthMult)
 		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", 1.0)
 		checkAttributeModifiersMultiplier(
 			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
-			config.players.toughness.gain * (level - 1) + (config.players.toughness.base - 1)
+			(config.players.toughness.gain * (level - 1) + (config.players.toughness.base - 1)) * (1 + config.players.toughness.multGain * (level - 1))
 		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", strength.toDouble())
+		checkAttributeModifiersMultiplier(strInst, IRpgEntity.STRENGTH_MULTIPLIER, "Easy RPG Strength Mult", strMult)
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", dexterity.toDouble())
+		checkAttributeModifiersMultiplier(dexInst, IRpgEntity.DEXTERITY_MULTIPLIER, "Easy RPG Dexterity Mult", dexMult)
 		checkAttributeModifiers(
 			intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "Easy RPG Intelligence",
 			intelligence.toDouble()
 		)
+		checkAttributeModifiersMultiplier(intInst, IRpgEntity.INTELLIGENCE_MULTIPLIER, "Easy RPG Intelligence Mult", intMult)
 		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Max Defence", defense.toDouble())
+		checkAttributeModifiersMultiplier(defInst, IRpgEntity.DEFENSE_MULTIPLIER, "Easy RPG Defense Mult", defMult)
 
 		if(syncFlags != 0) {
 			RPG_PLAYER.sync(player)

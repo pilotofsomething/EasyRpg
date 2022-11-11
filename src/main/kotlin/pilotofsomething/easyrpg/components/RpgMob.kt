@@ -119,17 +119,21 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 			val healthMult = maxHealthInst!!.baseValue / 20.0
 
 			checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
+			checkAttributeModifiersMultiplier(maxHealthInst, IRpgEntity.HEALTH_MULTIPLIER, "Easy RPG Health Mult", getHealthMult())
 			checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", 1.0)
 			checkAttributeModifiersMultiplier(
 				toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
-				config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)
+				(config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)) * (1 + config.entities.toughness.multGain * (level - 1))
 			)
 			checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
+			checkAttributeModifiersMultiplier(strInst, IRpgEntity.STRENGTH_MULTIPLIER, "Easy RPG Strength Mult", getStrMult())
 			checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
-			checkAttributeModifiers(
-				intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "easy RPG Intelligence", getInt().toDouble()
-			)
+			checkAttributeModifiersMultiplier(dexInst, IRpgEntity.DEXTERITY_MULTIPLIER, "Easy RPG Dexterity Mult", getDexMult())
+			checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "easy RPG Intelligence", getInt().toDouble())
+			checkAttributeModifiersMultiplier(intInst, IRpgEntity.INTELLIGENCE_MULTIPLIER, "Easy RPG Intelligence Mult", getIntMult())
 			checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
+			checkAttributeModifiersMultiplier(intInst, IRpgEntity.DEFENSE_MULTIPLIER, "Easy RPG Defense Mult", getDefMult())
+
 			entity.health = entity.maxHealth
 			RPG_MOB.sync(entity)
 		}
@@ -151,15 +155,20 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 		val healthMult = maxHealthInst!!.baseValue / 20.0
 
 		checkAttributeModifiers(maxHealthInst, IRpgEntity.HEALTH_MODIFIER, "Easy RPG Health", getHealth(healthMult))
+		checkAttributeModifiersMultiplier(maxHealthInst, IRpgEntity.HEALTH_MULTIPLIER, "Easy RPG Health Mult", getHealthMult())
 		checkAttributeModifiers(toughnessInst!!, IRpgEntity.BASE_TOUGHNESS, "Easy RPG Base Toughness", 1.0)
 		checkAttributeModifiersMultiplier(
 			toughnessInst, IRpgEntity.TOUGHNESS_MODIFIER, "Easy RPG Toughness",
-			config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)
+			(config.entities.toughness.gain * (level - 1) + (config.entities.toughness.base - 1)) * (1 + config.entities.toughness.multGain * (level - 1))
 		)
 		checkAttributeModifiers(strInst, IRpgEntity.STRENGTH_MODIFIER, "Easy RPG Strength", getStr().toDouble())
+		checkAttributeModifiersMultiplier(strInst, IRpgEntity.STRENGTH_MULTIPLIER, "Easy RPG Strength Mult", getStrMult())
 		checkAttributeModifiers(dexInst, IRpgEntity.DEXTERITY_MODIFIER, "Easy RPG Dexterity", getDex().toDouble())
+		checkAttributeModifiersMultiplier(dexInst, IRpgEntity.DEXTERITY_MULTIPLIER, "Easy RPG Dexterity Mult", getDexMult())
 		checkAttributeModifiers(intInst, IRpgEntity.INTELLIGENCE_MODIFIER, "easy RPG Intelligence", getInt().toDouble())
+		checkAttributeModifiersMultiplier(intInst, IRpgEntity.INTELLIGENCE_MULTIPLIER, "Easy RPG Intelligence Mult", getIntMult())
 		checkAttributeModifiers(defInst, IRpgEntity.DEFENSE_MODIFIER, "Easy RPG Defense", getDef().toDouble())
+		checkAttributeModifiersMultiplier(intInst, IRpgEntity.DEFENSE_MULTIPLIER, "Easy RPG Defense Mult", getDefMult())
 
 		entity.health += entity.maxHealth - oldHealth
 
@@ -226,11 +235,21 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				(config.entities.healthOptions.spGain * sp * this.spDist[0]).toInt() else 0) * mult
 	}
 
+	private fun getHealthMult(): Double {
+		val sp = (level * config.entities.spGain).toInt()
+		return config.entities.healthOptions.multGain * (level - 1) + config.entities.healthOptions.multiSpGain * sp * spDist[0]
+	}
+
 	private fun getStr(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
 		return (config.entities.strengthOptions.base +
 					config.entities.strengthOptions.gain * (level - 1)).toInt() + if(!base)
 				(config.entities.strengthOptions.spGain * sp * this.spDist[1]).toInt() else 0
+	}
+
+	private fun getStrMult(): Double {
+		val sp = (level * config.entities.spGain).toInt()
+		return config.entities.strengthOptions.multGain * (level - 1) + config.entities.strengthOptions.multiSpGain * sp * spDist[1]
 	}
 
 	private fun getDex(base: Boolean = false): Int {
@@ -240,6 +259,11 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				(config.entities.dexterityOptions.spGain * sp * this.spDist[2]).toInt() else 0
 	}
 
+	private fun getDexMult(): Double {
+		val sp = (level * config.entities.spGain).toInt()
+		return config.entities.dexterityOptions.multGain * (level - 1) + config.entities.dexterityOptions.multiSpGain * sp * spDist[2]
+	}
+
 	private fun getInt(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
 		return (config.entities.intelligenceOptions.base +
@@ -247,11 +271,21 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 				(config.entities.intelligenceOptions.spGain * sp * this.spDist[3]).toInt() else 0
 	}
 
+	private fun getIntMult(): Double {
+		val sp = (level * config.entities.spGain).toInt()
+		return config.entities.intelligenceOptions.multGain * (level - 1) + config.entities.intelligenceOptions.multiSpGain * sp * spDist[3]
+	}
+
 	private fun getDef(base: Boolean = false): Int {
 		val sp = (level * config.entities.spGain).toInt()
 		return (config.entities.defenseOptions.base +
 					config.entities.defenseOptions.gain * (level - 1)).toInt() + if(!base)
 				(config.entities.defenseOptions.spGain * sp * this.spDist[4]).toInt() else 0
+	}
+
+	private fun getDefMult(): Double {
+		val sp = (level * config.entities.spGain).toInt()
+		return config.entities.defenseOptions.multGain * (level - 1) + config.entities.defenseOptions.multiSpGain * sp * spDist[4]
 	}
 
 	override fun writeSyncPacket(buf: PacketByteBuf, recipient: ServerPlayerEntity) {

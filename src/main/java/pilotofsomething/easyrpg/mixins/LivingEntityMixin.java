@@ -36,14 +36,16 @@ public class LivingEntityMixin {
 			float damage = amount;
 
 			if(attacker instanceof PlayerEntity) {
-				damage *= ConfigKt.config.getPlayers().getDamage().getBase()
+				damage *= ConfigKt.getConfig().getPlayers().getDamage().getBase()
 								+ ConfigKt.config.getPlayers().getDamage().getGain() * (rpg.getLevel() - 1);
+				damage *= 1 + ConfigKt.getConfig().getPlayers().getDamage().getMultGain() * (rpg.getLevel() - 1);
 				damage *= Math.max(
 						Math.pow(ConfigKt.getConfig().getPlayers().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
 						ConfigKt.getConfig().getPlayers().getDamageScaling().getLimit());
 			} else {
 				damage *= ConfigKt.config.getEntities().getDamage().getBase()
 								+ ConfigKt.config.getEntities().getDamage().getGain() * (rpg.getLevel() - 1);
+				damage *= 1 + ConfigKt.getConfig().getEntities().getDamage().getMultGain() * (rpg.getLevel() - 1);
 				damage *= Math.max(
 						Math.pow(ConfigKt.getConfig().getEntities().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
 						ConfigKt.getConfig().getEntities().getDamageScaling().getLimit());

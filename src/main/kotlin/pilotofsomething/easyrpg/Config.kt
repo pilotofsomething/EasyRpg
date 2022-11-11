@@ -69,29 +69,29 @@ class ModConfig : ConfigData {
 		var expOptions = ExpOptions()
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var damage = StatOptionsNoSp(1.0, 0.2)
+		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
 		@ConfigEntry.Gui.Tooltip
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var toughness = StatOptionsNoSp(1.0, 1.8)
+		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var healthOptions = StatOptions(20, 4.0, 2.0)
+		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var strengthOptions = StatOptions(10, 2.0, 1.0)
+		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var dexterityOptions = StatOptions(10, 2.0, 1.0)
+		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var intelligenceOptions = StatOptions(10, 2.0, 1.0)
+		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var defenseOptions = StatOptions(10, 2.0, 1.0)
+		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		class ExpOptions {
 
@@ -153,29 +153,29 @@ class ModConfig : ConfigData {
 		var experience = ExperienceOptions()
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var damage = StatOptionsNoSp(1.0, 0.2)
+		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
 		@ConfigEntry.Gui.Tooltip
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var toughness = StatOptionsNoSp(1.0, 1.8)
+		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var healthOptions = StatOptions(20, 4.0, 2.0)
+		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var strengthOptions = StatOptions(10, 2.0, 1.0)
+		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var dexterityOptions = StatOptions(10, 2.0, 1.0)
+		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var intelligenceOptions = StatOptions(10, 2.0, 1.0)
+		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		@ConfigEntry.Gui.CollapsibleObject
-		var defenseOptions = StatOptions(10, 2.0, 1.0)
+		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		class ExperienceOptions {
 			var base = 1000.0
@@ -240,8 +240,8 @@ class ModConfig : ConfigData {
 		class RerollSettings(var levelMult: Double, var luck: Float)
 	}
 
-	class StatOptions(var base: Int, var gain: Double, var spGain: Double)
-	class StatOptionsNoSp(var base: Double, var gain: Double)
+	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var multGain: Double, var multiSpGain: Double)
+	class StatOptionsNoSp(var base: Double, var gain: Double, var multGain: Double)
 	class DamageScalingOptions(var amount: Double, var limit: Double)
 }
 
