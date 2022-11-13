@@ -6,16 +6,17 @@
 	"defaultRequire": 1
   },
   "mixins": [
+	"AbsorptionStatusEffectMixin",
 	"ClampedEntityAttributeMixin",
 	"HungerManagerMixin",
+	"ItemEntryMixin",
+	"ItemMixin",
+	"ItemStackMixin",
+	"LivingEntityInvoker",
 	"LivingEntityMixin",
 	"PlayerEntityMixin",
-	"StatusEffectMixin",
-	"AbsorptionStatusEffectMixin",
-	"ItemEntryMixin",
-	"ItemStackMixin",
-	"ItemMixin",
-	"SmithingScreenHandlerMixin"
+	"SmithingScreenHandlerMixin",
+	"StatusEffectMixin"
   ],
   "client": [
 	"DamageParticleFactoryMixin",

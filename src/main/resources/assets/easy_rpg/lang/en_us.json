@@ -66,6 +66,8 @@
   "text.autoconfig.easyrpg.option.entities.expOptions.exponent": "Exponent",
   "text.autoconfig.easyrpg.option.entities.expOptions.scalingSettings.expCap": "Experience Cap",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers": "Experience Modifiers",
+  "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.useVanillaExpValue": "Use Vanilla Exp Value as Modifier",
+  "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.useVanillaExpValue.@Tooltip": "When set the experience modifier for\nmobs is based on how much vanilla\nexp they drop.",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.health": "Health",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.health.base": "Base Value",
   "text.autoconfig.easyrpg.option.entities.expOptions.mobModifiers.health.value": "Weight",

@@ -69,9 +69,11 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 	}
 
 	private fun getEntityLevel(): Int {
-		val dist = 1 + sqrt(entity.squaredDistanceTo(0.0, entity.y, 0.0))
+		val players = entity.world.players.filter { player -> player.squaredDistanceTo(entity) < 16384f }
 
-		val players = entity.world.players.filter { player -> player.distanceTo(entity) < 128f }
+		if(players.isEmpty()) return -1
+
+		val dist = 1 + sqrt(entity.squaredDistanceTo(0.0, entity.y, 0.0))
 		val wTime = if(players.isEmpty()) 0L else getWeightedTime(players)
 
 		val level = when {
@@ -90,7 +92,6 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 		val dimensionId = entity.world.registryKey.value.toString()
 		val rules = config.entities.levelFormula[dimensionId] ?: config.entities.levelFormula["default"] ?: "1"
 
-		if(level == 0.0 || wTime == 0L) return -1
 		return Expression(rules).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
 	}
 

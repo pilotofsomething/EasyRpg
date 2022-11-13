@@ -40,6 +40,7 @@ import pilotofsomething.easyrpg.gui.StatsGui
 import pilotofsomething.easyrpg.gui.StatsScreen
 import pilotofsomething.easyrpg.item.EasyRpgItems
 import pilotofsomething.easyrpg.item.setupQualities
+import pilotofsomething.easyrpg.mixins.LivingEntityInvoker
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -191,6 +192,8 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	val mobID = Registry.ENTITY_TYPE.getId(killedEntity.type).toString()
 	val worth = if (config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
 		config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
+	} else if(config.entities.expOptions.mobModifiers.useVanillaExpValue) {
+		(killedEntity as LivingEntityInvoker).invokeGetXpToDrop(entity).toDouble()
 	} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
 			(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
 			(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)

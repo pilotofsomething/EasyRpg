@@ -94,7 +94,6 @@ class ModConfig : ConfigData {
 		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		class ExpOptions {
-
 			var baseValue = 125L
 
 			var exponent = 1.2
@@ -106,6 +105,10 @@ class ModConfig : ConfigData {
 			var scalingSettings = ScalingSettings()
 
 			class MobValueOptions {
+
+				@ConfigEntry.Gui.Tooltip
+				var useVanillaExpValue = false
+
 				@ConfigEntry.Gui.CollapsibleObject
 				var health = ValueOption(20.0, 0.25)
 
