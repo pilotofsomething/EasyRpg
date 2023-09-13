@@ -5,8 +5,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.text.LiteralText
-import net.minecraft.text.TranslatableText
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import pilotofsomething.easyrpg.calculateExpValue
 import pilotofsomething.easyrpg.components.RPG_MOB
@@ -32,13 +31,13 @@ class LivingEntityComponent : IEntityComponentProvider {
 			val rpg = if(entity !is PlayerEntity) {
 				RPG_MOB.get(entity)
 			} else RPG_PLAYER.get(entity)
-			tooltip.addPair(TranslatableText("easyrpg.waila.level"), LiteralText(I18n.translate("%,d", rpg.level)))
+			tooltip.addLine(Text.translatable("easyrpg.waila.level").append(Text.literal(I18n.translate(" %,d", rpg.level))))
 		}
 		if(config.getBoolean(Settings.showXpValue) && entity !is PlayerEntity) {
 			val xpV = calculateExpValue(MinecraftClient.getInstance().player, entity)
 			if(xpV < 10000000000L) {
-				tooltip.addPair(TranslatableText("easyrpg.waila.xp"), LiteralText(I18n.translate("%,d", xpV)))
-			} else tooltip.addPair(TranslatableText("easyrpg.waila.xp"), LiteralText(I18n.translate("%.5E", xpV)))
+				tooltip.addLine(Text.translatable("easyrpg.waila.xp").append(Text.literal(I18n.translate(" %,d", xpV))))
+			} else tooltip.addLine(Text.translatable("easyrpg.waila.xp").append(Text.literal(I18n.translate(" %.5E", xpV))))
 		}
 	}
 }

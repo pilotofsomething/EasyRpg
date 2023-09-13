@@ -11,7 +11,7 @@ val modVersion: String by project
 version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
-minecraft {}
+//minecraft {}
 repositories {
     maven {
         name = "CottonMC"
@@ -19,7 +19,7 @@ repositories {
     }
     maven {
         name = "Ladysnake Mods"
-        setUrl("https://ladysnake.jfrog.io/artifactory/mods")
+        setUrl("https://maven.ladysnake.org/releases")
     }
     maven {
         name = "TerraformersMC Maven"
@@ -35,6 +35,8 @@ repositories {
     maven {
         setUrl("https://maven.bai.lol")
     }
+    maven("https://maven.draylar.dev/releases")
+
 }
 dependencies {
     val minecraftVersion: String by project
@@ -54,16 +56,11 @@ dependencies {
     include("io.github.cottonmc:LibGui:$libGuiVersion")
 
     val cardinalComponentsVersion: String by project
-    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:$cardinalComponentsVersion")
-    include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:$cardinalComponentsVersion")
+    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion")
+    include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:$cardinalComponentsVersion")
 
-    modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:$cardinalComponentsVersion")
-    include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:$cardinalComponentsVersion")
-
-    val clothApiVersion: String by project
-    modApi("me.shedaniel.cloth:cloth-config-fabric:$clothApiVersion") {
-        exclude(group = "net.fabricmc.fabric-api")
-    }
+    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion")
+    include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:$cardinalComponentsVersion")
 
     val modmenuVersion: String by project
     modImplementation("com.terraformersmc:modmenu:$modmenuVersion")
@@ -75,8 +72,12 @@ dependencies {
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-$wthitVersion")
     modRuntimeOnly("mcp.mobius.waila:wthit:fabric-$wthitVersion")
 
-    modImplementation("com.ezylang:EvalEx:3.0.1")
-    include("com.ezylang:EvalEx:3.0.1")
+    val omegaConfigVersion: String by project
+    modImplementation("dev.draylar.omega-config:omega-config-base:$omegaConfigVersion")
+    include("dev.draylar.omega-config:omega-config-base:$omegaConfigVersion")
+
+    modImplementation("com.ezylang:EvalEx:3.0.2")
+    include("com.ezylang:EvalEx:3.0.2")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_17

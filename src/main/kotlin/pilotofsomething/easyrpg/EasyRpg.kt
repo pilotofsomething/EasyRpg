@@ -1,22 +1,14 @@
 package pilotofsomething.easyrpg
 
-import com.google.gson.Gson
-import dev.emi.trinkets.api.Trinket
-import dev.emi.trinkets.api.TrinketsApi
-import me.shedaniel.autoconfig.AutoConfig
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
+import draylar.omegaconfig.OmegaConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents
 import net.fabricmc.fabric.api.networking.v1.*
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.entity.LivingEntity
@@ -24,13 +16,13 @@ import net.minecraft.entity.attribute.ClampedEntityAttribute
 import net.minecraft.entity.attribute.EntityAttribute
 import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemStack
 import net.minecraft.network.PacketByteBuf
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.network.ServerPlayNetworkHandler
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
 import org.lwjgl.glfw.GLFW
 import pilotofsomething.easyrpg.command.EasyRpgCommand
 import pilotofsomething.easyrpg.components.IRpgPlayer
@@ -38,8 +30,6 @@ import pilotofsomething.easyrpg.components.RPG_MOB
 import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.gui.StatsGui
 import pilotofsomething.easyrpg.gui.StatsScreen
-import pilotofsomething.easyrpg.item.EasyRpgItems
-import pilotofsomething.easyrpg.item.setupQualities
 import pilotofsomething.easyrpg.mixins.LivingEntityInvoker
 import kotlin.math.max
 import kotlin.math.min
@@ -47,10 +37,9 @@ import kotlin.math.pow
 
 val ADD_STAT_ID = Identifier("easy_rpg", "change_stat")
 val SYNC_OTHER_PLAYER = Identifier("easy_rpg", "sync_other")
-val SYNC_CONFIG = Identifier("easy_rpg", "sync_config")
 
 fun registerEntityAttribute(id: String, attribute: EntityAttribute): EntityAttribute {
-	return Registry.register(Registry.ATTRIBUTE, "easy_rpg:$id", attribute)
+	return Registry.register(Registries.ATTRIBUTE, "easy_rpg:$id", attribute)
 }
 
 object EasyRpgAttributes {
@@ -73,10 +62,7 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 	private const val MOD_ID = "easy_rpg"
 
 	override fun onInitialize() {
-		AutoConfig.register(ModConfig::class.java, ::GsonConfigSerializer)
-		config = AutoConfig.getConfigHolder(ModConfig::class.java).config
-		serverConfig.client = config.client
-		setupQualities()
+		config = OmegaConfig.register(ModConfig::class.java)
 
 		ServerPlayNetworking.registerGlobalReceiver(
 			ADD_STAT_ID) { server: MinecraftServer, player: ServerPlayerEntity, _: ServerPlayNetworkHandler, buf: PacketByteBuf, _: PacketSender ->
@@ -95,35 +81,12 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 			}
 		}
 
-		ServerPlayConnectionEvents.JOIN.register { _: ServerPlayNetworkHandler, sender: PacketSender, _: MinecraftServer ->
-			var buf = PacketByteBufs.create()
-			buf.writeVarInt(0)
-			buf.writeString(Gson().toJson(config.players))
-			sender.sendPacket(SYNC_CONFIG, buf)
-
-			buf = PacketByteBufs.create()
-			buf.writeVarInt(1)
-			buf.writeString(Gson().toJson(config.statCaps))
-			sender.sendPacket(SYNC_CONFIG, buf)
-
-			buf = PacketByteBufs.create()
-			buf.writeVarInt(2)
-			buf.writeString(Gson().toJson(config.items))
-			sender.sendPacket(SYNC_CONFIG, buf)
-
-			buf = PacketByteBufs.create()
-			buf.writeVarInt(3)
-			buf.writeString(Gson().toJson(config.entities))
-			sender.sendPacket(SYNC_CONFIG, buf)
-		}
-
-		CommandRegistrationCallback.EVENT.register { dispatcher, _ ->
+		CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
 			EasyRpgCommand.register(dispatcher)
 		}
 
 		// Attack damage is set to be tracked so the WAILA plugin can estimate exp value
 		EntityAttributes.GENERIC_ATTACK_DAMAGE.isTracked = true
-		EasyRpgItems.registerItems()
 	}
 
 	override fun onInitializeClient() {
@@ -138,32 +101,6 @@ object EasyRpg : ModInitializer, ClientModInitializer {
 				val player = client.world?.getPlayerByUuid(uuid) ?: return@execute
 				val rpg = RPG_PLAYER.get(player)
 				rpg.level = level
-			}
-		}
-
-		ClientPlayNetworking.registerGlobalReceiver(SYNC_CONFIG) { client: MinecraftClient, _: ClientPlayNetworkHandler, buf: PacketByteBuf, _: PacketSender ->
-			val id = buf.readVarInt()
-			val json = buf.readString()
-			client.execute {
-				when(id) {
-					0 -> serverConfig.players = Gson().fromJson(json, ModConfig.PlayerOptions::class.java)
-					1 -> serverConfig.statCaps = Gson().fromJson(json, ModConfig.StatCapOptions::class.java)
-					2 -> serverConfig.items = Gson().fromJson(json, ModConfig.ItemOptions::class.java)
-					3 -> serverConfig.entities = Gson().fromJson(json, ModConfig.EntitiesOptions::class.java)
-				}
-			}
-		}
-
-		ClientPlayConnectionEvents.JOIN.register { _: ClientPlayNetworkHandler, _: PacketSender, client: MinecraftClient ->
-			client.execute {
-				config = serverConfig
-			}
-		}
-
-		ClientPlayConnectionEvents.DISCONNECT.register { _: ClientPlayNetworkHandler, client: MinecraftClient ->
-			client.execute {
-				val holder = AutoConfig.getConfigHolder(ModConfig::class.java)
-				config = holder.get()
 			}
 		}
 
@@ -189,11 +126,11 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	val attack = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.value ?: 0.0
 	val armor = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)?.value ?: 0.0
 
-	val mobID = Registry.ENTITY_TYPE.getId(killedEntity.type).toString()
+	val mobID = Registries.ENTITY_TYPE.getId(killedEntity.type).toString()
 	val worth = if (config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
 		config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
 	} else if(config.entities.expOptions.mobModifiers.useVanillaExpValue) {
-		(killedEntity as LivingEntityInvoker).invokeGetXpToDrop(entity).toDouble()
+		(killedEntity as LivingEntityInvoker).invokeGetXpToDrop().toDouble()
 	} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
 			(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
 			(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
@@ -214,36 +151,6 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	return min(max((base * worth * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap)
 }
 
-fun calculateVanillaExpValue(entity: PlayerEntity?, killedEntity: LivingEntity, xp: Int): Int {
-	if(entity == null || killedEntity is PlayerEntity) return xp
-	if(!config.entities.expOptions.scalingSettings.scaleVanillaExp) return xp
-
-	val pRpg = RPG_PLAYER.get(entity)
-	val mRpg = RPG_MOB.get(killedEntity)
-
-	val scaleFactor = min(
-		max(
-			(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if (mRpg.level - pRpg.level > 0) {
-				config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
-					mRpg.level - pRpg.level
-				)
-			} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
-				mRpg.level - pRpg.level
-			),
-			config.entities.expOptions.scalingSettings.scalingMin
-		),
-		config.entities.expOptions.scalingSettings.scalingMax
-	)
-	return min(max((xp * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap).toInt()
-}
-
-fun isItemTrinket(stack: ItemStack): Boolean {
-	if(FabricLoader.getInstance().isModLoaded("trinkets")) {
-		return stack.item is Trinket || TrinketsApi.getTrinket(stack.item) != TrinketsApi.getDefaultTrinket()
-	}
-	return false
-}
-
 fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {
 	return when(attribute) {
 		EntityAttributes.GENERIC_MAX_HEALTH -> config.statCaps.hpCap.toDouble()
@@ -254,4 +161,9 @@ fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {
 		EasyRpgAttributes.DEFENSE -> config.statCaps.defCap.toDouble()
 		else -> null
 	}
+}
+
+fun getDamagePowScaling(type: String): HashMap<String, Double> {
+	if(!config.damageTypeScaling.containsKey(type)) println("Unknown damage type: $type, using defaults.")
+	return config.damageTypeScaling[type] ?: config.damageTypeScaling["default"]!!
 }

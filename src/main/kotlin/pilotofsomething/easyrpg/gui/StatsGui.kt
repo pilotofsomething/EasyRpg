@@ -3,15 +3,20 @@ package pilotofsomething.easyrpg.gui
 import io.github.cottonmc.cotton.gui.GuiDescription
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription
+import io.github.cottonmc.cotton.gui.client.ScreenDrawing
 import io.github.cottonmc.cotton.gui.widget.*
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment
 import io.github.cottonmc.cotton.gui.widget.data.Texture
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
+import net.minecraft.util.math.MathHelper
 import pilotofsomething.easyrpg.ADD_STAT_ID
 import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_PLAYER
@@ -42,20 +47,19 @@ class StatsGui : LightweightGuiDescription() {
 		levelXp.setAlignment(HorizontalAlignment.RIGHT)
 		root.add(levelXp, 243, 4)
 
-		val xpBar = WDynamicBar(
-			null as Texture?, null,
+		val xpBar = WColoredBar(
 			{ if(rpg.xpReqForLevel > 0) rpg.xpForLevel / rpg.xpReqForLevel.toFloat() else 1.0f },
-			WDynamicBar.Direction.RIGHT
+			WBar.Direction.RIGHT
 		)
-		xpBar.setBarColor(0xB6FF00)
-		xpBar.setBarOpacity(0.67f)
-		xpBar.setBarBackgroundOpacity(0.33f)
+		xpBar.color = 0xB6FF00
+		xpBar.opacity = 0.67f
+		xpBar.backgroundOpacity = 0.33f
 		root.add(xpBar, 4, 14, 256, 4)
 
 		val playerStats = WListPanel(
 			IRpgPlayer.Stats.values().toList(), { WPlainPanel() }) { stat: IRpgPlayer.Stats, p: WPlainPanel ->
 			p.setSize(248, 18)
-			val name = WLabel(I18n.translate(stat.statName))
+			val name = WLabel(Text.translatable(stat.statName))
 			name.horizontalAlignment = HorizontalAlignment.CENTER
 			p.add(name, p.width / 2, 0)
 			val label =
@@ -66,7 +70,7 @@ class StatsGui : LightweightGuiDescription() {
 		playerStats.setListItemHeight(18)
 		root.add(playerStats, 4, 22, 256, 92)
 
-		val spLabel = WLabel(I18n.translate("easyrpg.gui.stat_points"))
+		val spLabel = WLabel(Text.translatable("easyrpg.gui.stat_points"))
 		spLabel.horizontalAlignment = HorizontalAlignment.CENTER
 		root.add(spLabel, 132, 120)
 		val spLabelC =
@@ -84,7 +88,7 @@ class StatsGui : LightweightGuiDescription() {
 }
 
 class StatPanel : WPlainPanel() {
-	private val label = WLabel("")
+	private val label = WLabel(Text.literal(""))
 
 	init {
 		setSize(248, 18)
@@ -134,4 +138,77 @@ class StatPanel : WPlainPanel() {
 		}
 		add(addButton, width - 24, 0)
 	}
+}
+
+class WColoredBar(val progress: () -> Float, direction: WBar.Direction) : WBar(null as Texture?, null, 0, 0, direction) {
+	var color = 0xFFFFFF
+	var backgroundColor = 0x000000
+	var opacity = 1.0f
+	var backgroundOpacity = 1.0f
+
+	@Environment(EnvType.CLIENT)
+	override fun paint(context: DrawContext?, x: Int, y: Int, mouseX: Int, mouseY: Int) {
+		ScreenDrawing.coloredRect(
+			context,
+			x,
+			y,
+			getWidth(),
+			getHeight(),
+			ScreenDrawing.colorAtOpacity(backgroundColor, backgroundOpacity)
+		)
+		var percent = progress()
+		if (percent < 0) percent = 0f
+		if (percent > 1) percent = 1f
+		var barMax = getWidth()
+		if (direction == Direction.DOWN || direction == Direction.UP) barMax = getHeight()
+		percent = (percent * barMax).toInt() / barMax.toFloat() //Quantize to bar size
+		val barSize = (barMax * percent).toInt()
+		if (barSize <= 0) return
+		when (direction) {
+			Direction.UP -> {
+				var top = y + getHeight()
+				top -= barSize
+				ScreenDrawing.coloredRect(
+					context,
+					x,
+					top,
+					getWidth(),
+					barSize,
+					ScreenDrawing.colorAtOpacity(color, opacity)
+				)
+			}
+
+			Direction.RIGHT -> ScreenDrawing.coloredRect(
+				context,
+				x,
+				y,
+				barSize,
+				getHeight(),
+				ScreenDrawing.colorAtOpacity(color, opacity)
+			)
+
+			Direction.DOWN -> ScreenDrawing.coloredRect(
+				context,
+				x,
+				y,
+				getWidth(),
+				barSize,
+				ScreenDrawing.colorAtOpacity(color, opacity)
+			)
+
+			Direction.LEFT -> {
+				var left = x + getWidth()
+				left -= barSize
+				ScreenDrawing.coloredRect(
+					context,
+					left,
+					y,
+					barSize,
+					getHeight(),
+					ScreenDrawing.colorAtOpacity(color, opacity)
+				)
+			}
+		}
+	}
+
 }

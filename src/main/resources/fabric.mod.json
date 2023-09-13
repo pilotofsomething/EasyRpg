@@ -30,9 +30,6 @@
     "cardinal-components-entity": [
       "pilotofsomething.easyrpg.components.RpgPlayer::registerEntityComponentFactories",
       "pilotofsomething.easyrpg.components.RpgMob::registerEntityComponentFactories"
-    ],
-    "modmenu": [
-      "pilotofsomething.easyrpg.ConfigScreen"
     ]
   },
   "mixins": [
@@ -40,14 +37,14 @@
   ],
   "depends": {
     "fabricloader": ">=0.12.8",
-    "fabric": "*",
+    "fabric-api": "*",
     "fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
-    "minecraft": "1.18.x",
+    "minecraft": "1.20.x",
     "java": ">=17",
-    "cardinal-components-base": ">=4.0.0",
-    "cardinal-components-entity": ">=4.0.0",
-    "cloth-config2": ">=6.0.0",
-    "libgui": ">=5.0.0-beta"
+    "cardinal-components-base": ">=5.0.0",
+    "cardinal-components-entity": ">=5.0.0",
+    "omega-config": ">=1.4.0+1.20.1",
+    "libgui": ">=8.0.0"
   },
   "custom": {
     "cardinal-components": [

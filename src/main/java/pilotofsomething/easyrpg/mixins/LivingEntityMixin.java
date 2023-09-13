@@ -1,5 +1,8 @@
 package pilotofsomething.easyrpg.mixins;
 
+import com.ezylang.evalex.EvaluationException;
+import com.ezylang.evalex.Expression;
+import com.ezylang.evalex.parser.ParseException;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -17,6 +20,8 @@ import pilotofsomething.easyrpg.components.IRpgEntity;
 import pilotofsomething.easyrpg.ConfigKt;
 import pilotofsomething.easyrpg.components.RpgMobKt;
 import pilotofsomething.easyrpg.components.RpgPlayerKt;
+
+import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
@@ -50,17 +55,22 @@ public class LivingEntityMixin {
 						Math.pow(ConfigKt.getConfig().getEntities().getDamageScaling().getAmount(), Math.max(thisRpg.getLevel() - rpg.getLevel(), 0)),
 						ConfigKt.getConfig().getEntities().getDamageScaling().getLimit());
 			}
+			Map<String, Double> powScaling = EasyRpgKt.getDamagePowScaling(source.getTypeRegistryEntry().getKey().orElseThrow().getValue().toString());
 
+			double strength = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getSTRENGTH());
+			double dexterity = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getDEXTERITY());
+			double intelligence = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getINTELLIGENCE());
 			double defense = getAttributeValue(EasyRpgAttributes.INSTANCE.getDEFENSE());
-			if(source.isMagic()) {
-				double intelligence = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getINTELLIGENCE());
-				return Math.min(damage * (float) (intelligence / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
-			} else if(source.isProjectile()) {
-				double dexterity = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getDEXTERITY());
-				return Math.min(damage * (float) (dexterity / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
-			} else {
-				double strength = attacker.getAttributeValue(EasyRpgAttributes.INSTANCE.getSTRENGTH());
-				return Math.min(damage * (float) (strength / defense), ConfigKt.getConfig().getStatCaps().getDamageCap());
+
+			double power = Math.max(strength * powScaling.get("strength")
+					+ dexterity * powScaling.get("dexterity")
+					+ intelligence * powScaling.get("intelligence"), 1);
+			double def = Math.max(defense * powScaling.get("defense"), 1);
+
+			try {
+				return Math.min(new Expression(ConfigKt.getConfig().getDamageFormula()).with("attack", damage).with("power", power).with("defense", def).evaluate().getNumberValue().floatValue(), ConfigKt.getConfig().getStatCaps().getDamageCap());
+			} catch (EvaluationException | ParseException e) {
+				throw new RuntimeException(e);
 			}
 		}
 
@@ -89,11 +99,6 @@ public class LivingEntityMixin {
 				.add(EasyRpgAttributes.INSTANCE.getDEFENSE());
 	}
 
-	@Redirect(method = "dropXp()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getXpToDrop(Lnet/minecraft/entity/player/PlayerEntity;)I"))
-	private int scaleVanillaExp(LivingEntity instance, PlayerEntity player) {
-		return EasyRpgKt.calculateVanillaExpValue(player, instance, getXpToDrop(player));
-	}
-
 	@Shadow
 	public float getMaxHealth() {
 		return 0f;
@@ -110,5 +115,5 @@ public class LivingEntityMixin {
 	}
 
 	@Shadow
-	protected int getXpToDrop(PlayerEntity player) { return 0; }
+	protected int getXpToDrop() { return 0; }
 }

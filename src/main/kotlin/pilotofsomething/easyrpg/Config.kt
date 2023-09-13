@@ -1,40 +1,27 @@
 package pilotofsomething.easyrpg
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory
-import com.terraformersmc.modmenu.api.ModMenuApi
-import me.shedaniel.autoconfig.AutoConfig
-import me.shedaniel.autoconfig.ConfigData
-import me.shedaniel.autoconfig.annotation.Config
-import me.shedaniel.autoconfig.annotation.ConfigEntry
-import me.shedaniel.clothconfig2.gui.AbstractConfigScreen
-import pilotofsomething.easyrpg.item.setupQualities
+import draylar.omegaconfig.api.Config
+import draylar.omegaconfig.api.Syncing
 
 lateinit var config: ModConfig
 
-val serverConfig = ModConfig()
+class ModConfig : Config {
 
-@Config(name = "easyrpg")
-class ModConfig : ConfigData {
-
-	@ConfigEntry.Category("Client")
-	@ConfigEntry.Gui.TransitiveObject
 	var client = ClientOptions()
 
-	@ConfigEntry.Category("StatCaps")
-	@ConfigEntry.Gui.TransitiveObject
 	var statCaps = StatCapOptions()
 
-	@ConfigEntry.Category("Players")
-	@ConfigEntry.Gui.TransitiveObject
+	@Syncing
 	var players = PlayerOptions()
 
-	@ConfigEntry.Category("Entities")
-	@ConfigEntry.Gui.TransitiveObject
+	@Syncing
 	var entities = EntitiesOptions()
 
-	@ConfigEntry.Category("Items")
-	@ConfigEntry.Gui.TransitiveObject
-	var items = ItemOptions()
+	@Syncing
+	var damageTypeScaling = defaultDamageScaling()
+
+	@Syncing
+	var damageFormula = "attack * power / defense"
 
 	class ClientOptions {
 		var renderCustomHud = true
@@ -51,201 +38,171 @@ class ModConfig : ConfigData {
 		var damageCap = 9999
 	}
 
+	@Syncing
 	class EntitiesOptions {
-		@ConfigEntry.Gui.Excluded
+		@Syncing
 		var levelFormula = defaultLevelFormula()
 
+		@Syncing
 		var maxLevel: Int = 999
 
+		@Syncing
 		var spGain: Double = 6.0
 
-		@ConfigEntry.Gui.Tooltip
+		@Syncing
 		var damageScalingRatio = 0.5
 
-		@ConfigEntry.Gui.Tooltip
 		var healScalingRatio = 0.5
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var expOptions = ExpOptions()
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
-		@ConfigEntry.Gui.Tooltip
+		@Syncing
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
+		@Syncing
 		class ExpOptions {
+			@Syncing
 			var baseValue = 125L
 
+			@Syncing
 			var exponent = 1.2
 
-			@ConfigEntry.Gui.CollapsibleObject
+			@Syncing
 			var mobModifiers = MobValueOptions()
 
-			@ConfigEntry.Gui.CollapsibleObject
+			@Syncing
 			var scalingSettings = ScalingSettings()
 
 			class MobValueOptions {
 
-				@ConfigEntry.Gui.Tooltip
+				@Syncing
 				var useVanillaExpValue = false
 
-				@ConfigEntry.Gui.CollapsibleObject
+				@Syncing
 				var health = ValueOption(20.0, 0.25)
 
-				@ConfigEntry.Gui.CollapsibleObject
+				@Syncing
 				var attack = ValueOption(3.0, 0.75)
 
-				@ConfigEntry.Gui.CollapsibleObject
+				@Syncing
 				var armor = ValueOption(10.0, 0.5)
 
-				@ConfigEntry.Gui.Excluded
+				@Syncing
 				var mobValueOverrides = hashMapOf(
 					"minecraft:ender_dragon" to 50.0,
 					"minecraft:wither" to 80.0,
 					"minecraft:creeper" to 1.2
 				)
 
+				@Syncing
 				class ValueOption(var base: Double, var value: Double)
 			}
 
 			class ScalingSettings {
+				@Syncing
 				var scalingAmount = 0.1
+				@Syncing
 				var exponentialIncreaseAmount = 1.0
+				@Syncing
 				var exponentialDecreaseAmount = 1.0
+				@Syncing
 				var scalingMax = 3.0
+				@Syncing
 				var scalingMin = 0.1
+				@Syncing
 				var expCap = Long.MAX_VALUE
-
-				var scaleVanillaExp = false
 			}
 		}
 	}
 
+	@Syncing
 	class PlayerOptions {
+		@Syncing
 		var maxLevel: Int = 999
 
+		@Syncing
 		var spGain: Double = 6.0
 
-		@ConfigEntry.Gui.Tooltip
+		@Syncing
 		var damageScalingRatio = 0.5
 
-		@ConfigEntry.Gui.Tooltip
+		@Syncing
 		var healScalingRatio = 0.5
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var experience = ExperienceOptions()
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
-		@ConfigEntry.Gui.Tooltip
+		@Syncing
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@ConfigEntry.Gui.CollapsibleObject
+		@Syncing
 		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
+		@Syncing
 		class ExperienceOptions {
+			@Syncing
 			var base = 1000.0
+			@Syncing
 			var exponent = 2.4
-
-			@ConfigEntry.Gui.Tooltip
+			@Syncing
 			var levelOffset = 0
-
-			@ConfigEntry.Gui.Tooltip
+			@Syncing
 			var advancedExpCurve = ""
-
-			@ConfigEntry.Gui.Tooltip
+			@Syncing
 			var useVanillaExp = false
 		}
 	}
 
-	class ItemOptions {
-		var enabled: Boolean = false
-		var crafted: Boolean = false
+	@Syncing
+	class StatOptions(@Syncing var base: Int, @Syncing var gain: Double, @Syncing var spGain: Double, @Syncing var multGain: Double, @Syncing var multiSpGain: Double)
+	@Syncing
+	class StatOptionsNoSp(@Syncing var base: Double, @Syncing var gain: Double, @Syncing var multGain: Double)
+	@Syncing
+	class DamageScalingOptions(@Syncing var amount: Double, @Syncing var limit: Double)
 
-		var craftedLevelMult: Double = 0.5
-
-		@ConfigEntry.Gui.Excluded
-		var levelFormula = defaultLevelFormula()
-
-		var maxLevel: Int = 999
-
-		var spGain: Double = 1.0
-
-		var healthGain: Double = 2.0
-		var strengthGain: Double = 1.0
-		var dexterityGain: Double = 1.0
-		var intelligenceGain: Double = 1.0
-		var defenseGain: Double = 1.0
-
-		@ConfigEntry.Gui.Excluded
-		var rerollers = hashMapOf(
-			"easy_rpg:iron_reroller" to RerollSettings(0.6, 0.0f),
-			"easy_rpg:gold_reroller" to RerollSettings(0.8, 2.0f),
-			"easy_rpg:diamond_reroller" to RerollSettings(1.0, 4.0f),
-			"easy_rpg:netherite_reroller" to RerollSettings(1.0, 12.0f)
-		)
-
-		@ConfigEntry.Gui.CollapsibleObject
-		var rarities = Rarities()
-
-		class Rarities {
-			@ConfigEntry.Gui.CollapsibleObject
-			var common = RaritySettings(600, 1.0, 1)
-
-			@ConfigEntry.Gui.CollapsibleObject
-			var uncommon = RaritySettings(280, 1.5, 2)
-
-			@ConfigEntry.Gui.CollapsibleObject
-			var rare = RaritySettings(100, 2.0, 3)
-
-			@ConfigEntry.Gui.CollapsibleObject
-			var epic = RaritySettings(20, 2.5, 4)
-		}
-
-		class RaritySettings(var weight: Int, var spMultiplier: Double, var maxStatCount: Int)
-		class RerollSettings(var levelMult: Double, var luck: Float)
+	override fun getName(): String {
+		return "easyrpg"
 	}
-
-	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var multGain: Double, var multiSpGain: Double)
-	class StatOptionsNoSp(var base: Double, var gain: Double, var multGain: Double)
-	class DamageScalingOptions(var amount: Double, var limit: Double)
 }
 
 private fun defaultLevelFormula(): HashMap<String, String> {
@@ -257,12 +214,52 @@ private fun defaultLevelFormula(): HashMap<String, String> {
 	)
 }
 
-class ConfigScreen : ModMenuApi {
-	override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
-		return ConfigScreenFactory { parent ->
-			val screen = AutoConfig.getConfigScreen(ModConfig::class.java, parent).get()
-			(screen as AbstractConfigScreen).setSavingRunnable { AutoConfig.getConfigHolder(ModConfig::class.java).save(); setupQualities() }
-			screen
-		}
-	}
+private fun defaultDamageScaling(): HashMap<String, HashMap<String, Double>> {
+	return hashMapOf(
+		"minecraft:generic" to hashMapOf("strength" to 0.33, "dexterity" to 0.33, "intelligence" to 0.33, "defense" to 1.0),
+		"minecraft:indirect_magic" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:wither_skull" to hashMapOf("strength" to 0.0, "dexterity" to 0.8, "intelligence" to 0.2, "defense" to 1.0),
+		"minecraft:cramming" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:trident" to hashMapOf("strength" to 0.4, "dexterity" to 0.6, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:sting" to hashMapOf("strength" to 0.1, "dexterity" to 0.9, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:thrown" to hashMapOf("strength" to 0.3, "dexterity" to 0.7, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:hot_floor" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:on_fire" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:lava" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:player_attack" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:sonic_boom" to hashMapOf("strength" to 0.0, "dexterity" to 0.7, "intelligence" to 0.3, "defense" to 0.33),
+		"minecraft:mob_attack_no_aggro" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:fireball" to hashMapOf("strength" to 0.0, "dexterity" to 0.8, "intelligence" to 0.2, "defense" to 1.0),
+		"minecraft:player_explosion" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:falling_stalactite" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:unattributed_fireball" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:stalagmite" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:in_fire" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:bad_respawn_point" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:generic_kill" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:magic" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:mob_attack" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:freeze" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:arrow" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:sweet_berry_bush" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:dragon_breath" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:fly_into_wall" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:cactus" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:out_of_world" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:starve" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:drown" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:fireworks" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:fall" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:falling_anvil" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:in_wall" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:dry_out" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:wither" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:lightning_bolt" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:explosion" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:falling_block" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:thorns" to hashMapOf("strength" to 0.0, "dexterity" to 0.0, "intelligence" to 1.0, "defense" to 1.0),
+		"minecraft:mob_projectile" to hashMapOf("strength" to 0.0, "dexterity" to 1.0, "intelligence" to 0.0, "defense" to 1.0),
+		"minecraft:outside_border" to hashMapOf("strength" to 1.0, "dexterity" to 0.0, "intelligence" to 0.0, "defense" to 1.0),
+		"default" to hashMapOf("strength" to 0.33, "dexterity" to 0.33, "intelligence" to 0.33, "defense" to 1.0)
+	)
 }
