@@ -17,10 +17,8 @@ class ModConfig : Config {
 	@Syncing
 	var entities = EntitiesOptions()
 
-	@Syncing
 	var damageTypeScaling = defaultDamageScaling()
 
-	@Syncing
 	var damageFormula = "attack * power / defense"
 
 	class ClientOptions {
@@ -38,18 +36,13 @@ class ModConfig : Config {
 		var damageCap = 9999
 	}
 
-	@Syncing
 	class EntitiesOptions {
-		@Syncing
 		var levelFormula = defaultLevelFormula()
 
-		@Syncing
 		var maxLevel: Int = 999
 
-		@Syncing
 		var spGain: Double = 6.0
 
-		@Syncing
 		var damageScalingRatio = 0.5
 
 		var healScalingRatio = 0.5
@@ -57,31 +50,22 @@ class ModConfig : Config {
 		@Syncing
 		var expOptions = ExpOptions()
 
-		@Syncing
 		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
-		@Syncing
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
-		@Syncing
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		@Syncing
 		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		@Syncing
 		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		class ExpOptions {
 			@Syncing
 			var baseValue = 125L
@@ -116,8 +100,7 @@ class ModConfig : Config {
 					"minecraft:creeper" to 1.2
 				)
 
-				@Syncing
-				class ValueOption(var base: Double, var value: Double)
+				class ValueOption(@Syncing var base: Double, @Syncing var value: Double)
 			}
 
 			class ScalingSettings {
@@ -137,48 +120,35 @@ class ModConfig : Config {
 		}
 	}
 
-	@Syncing
 	class PlayerOptions {
 		@Syncing
 		var maxLevel: Int = 999
 
-		@Syncing
 		var spGain: Double = 6.0
 
-		@Syncing
 		var damageScalingRatio = 0.5
 
-		@Syncing
 		var healScalingRatio = 0.5
 
 		@Syncing
 		var experience = ExperienceOptions()
 
-		@Syncing
 		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
-		@Syncing
 		var damageScaling = DamageScalingOptions(0.925, 0.25)
 
-		@Syncing
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		@Syncing
 		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		@Syncing
 		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		@Syncing
 		class ExperienceOptions {
 			@Syncing
 			var base = 1000.0
@@ -193,12 +163,11 @@ class ModConfig : Config {
 		}
 	}
 
-	@Syncing
-	class StatOptions(@Syncing var base: Int, @Syncing var gain: Double, @Syncing var spGain: Double, @Syncing var multGain: Double, @Syncing var multiSpGain: Double)
-	@Syncing
-	class StatOptionsNoSp(@Syncing var base: Double, @Syncing var gain: Double, @Syncing var multGain: Double)
-	@Syncing
-	class DamageScalingOptions(@Syncing var amount: Double, @Syncing var limit: Double)
+	class StatOptions(var base: Int, var gain: Double, var spGain: Double, var multGain: Double, var multiSpGain: Double)
+
+	class StatOptionsNoSp(var base: Double, var gain: Double, var multGain: Double)
+
+	class DamageScalingOptions(var amount: Double, var limit: Double)
 
 	override fun getName(): String {
 		return "easyrpg"
