@@ -174,12 +174,17 @@ class ModConfig : Config {
 	}
 }
 
-private fun defaultLevelFormula(): HashMap<String, String> {
+class LevelFormula(var formula: String, var minY: Int = -2048, var maxY: Int = 2048)
+
+private fun defaultLevelFormula(): HashMap<String, ArrayList<LevelFormula>> {
 	return hashMapOf(
-		"minecraft:overworld" to "MAX(0.5 * level + 0.5 * distance / 120, 1)",
-		"minecraft:the_nether" to "MAX(0.5 * level + 0.5 * distance / 15, 1)",
-		"minecraft:the_end" to "MAX((0.5 * level) + (0.5 * distance / 120) + 75, 75)",
-		"default" to "MAX(0.5 * level + 0.5 * distance / 120, 1)"
+		"minecraft:overworld" to arrayListOf(
+			LevelFormula("MAX(0.5 * level + 0.5 * distance / 120, 1)", minY = 0),
+			LevelFormula("MAX((0.5 * level) + (0.5 * distance / 120) + 25, 25)", maxY = 0)
+		),
+		"minecraft:the_nether" to arrayListOf(LevelFormula("MAX(0.5 * level + 0.5 * distance / 15, 1)")),
+		"minecraft:the_end" to arrayListOf(LevelFormula("MAX((0.5 * level) + (0.5 * distance / 120) + 75, 75)")),
+		"default" to arrayListOf(LevelFormula("MAX(0.5 * level + 0.5 * distance / 120, 1)"))
 	)
 }
 

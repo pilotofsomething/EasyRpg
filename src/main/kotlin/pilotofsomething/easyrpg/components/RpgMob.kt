@@ -20,6 +20,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
 import pilotofsomething.easyrpg.EasyRpgAttributes
+import pilotofsomething.easyrpg.LevelFormula
 import pilotofsomething.easyrpg.config
 import java.util.*
 import kotlin.math.max
@@ -90,9 +91,15 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 		}
 
 		val dimensionId = entity.world.registryKey.value.toString()
-		val rules = config.entities.levelFormula[dimensionId] ?: config.entities.levelFormula["default"] ?: "1"
+		val rules = config.entities.levelFormula[dimensionId] ?: config.entities.levelFormula["default"] ?: arrayListOf(LevelFormula("1"))
 
-		return Expression(rules).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
+		for (rule in rules) {
+			if (entity.y.toInt() in rule.minY until rule.maxY) {
+				return Expression(rule.formula).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
+			}
+		}
+
+		return 1
 	}
 
 	override fun serverTick() {
