@@ -68,7 +68,7 @@ public class LivingEntityMixin {
 			double def = Math.max(defense * powScaling.get("defense"), 1);
 
 			try {
-				return Math.min(new Expression(ConfigKt.getConfig().getDamageFormula()).with("attack", damage).with("power", power).with("defense", def).evaluate().getNumberValue().floatValue(), ConfigKt.getConfig().getStatCaps().getDamageCap());
+				return Math.min(new Expression(ConfigKt.getConfig().getDamageFormula()).with("attack", damage).and("power", power).and("defense", def).evaluate().getNumberValue().floatValue(), ConfigKt.getConfig().getStatCaps().getDamageCap());
 			} catch (EvaluationException | ParseException e) {
 				throw new RuntimeException(e);
 			}
