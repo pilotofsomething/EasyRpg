@@ -22,6 +22,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
+import pilotofsomething.easyrpg.EVALEX_CONFIG
 import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.SYNC_OTHER_PLAYER
 import pilotofsomething.easyrpg.config
@@ -172,7 +173,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 			if(config.players.experience.advancedExpCurve.isBlank()) {
 				(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
 			} else {
-				Expression(config.players.experience.advancedExpCurve).with("level", lvl).evaluate().numberValue.toLong()
+				Expression(config.players.experience.advancedExpCurve, EVALEX_CONFIG).with("level", lvl).evaluate().numberValue.toLong()
 			}
 		} else 0
 	}

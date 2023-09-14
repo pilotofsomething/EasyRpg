@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg
 
+import com.ezylang.evalex.config.ExpressionConfiguration
 import draylar.omegaconfig.OmegaConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
@@ -31,12 +32,15 @@ import pilotofsomething.easyrpg.components.RPG_PLAYER
 import pilotofsomething.easyrpg.gui.StatsGui
 import pilotofsomething.easyrpg.gui.StatsScreen
 import pilotofsomething.easyrpg.mixins.LivingEntityInvoker
+import java.math.MathContext
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
 val ADD_STAT_ID = Identifier("easy_rpg", "change_stat")
 val SYNC_OTHER_PLAYER = Identifier("easy_rpg", "sync_other")
+
+val EVALEX_CONFIG = ExpressionConfiguration.builder().mathContext(MathContext.DECIMAL64).build()
 
 fun registerEntityAttribute(id: String, attribute: EntityAttribute): EntityAttribute {
 	return Registry.register(Registries.ATTRIBUTE, "easy_rpg:$id", attribute)

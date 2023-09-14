@@ -19,6 +19,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.minecraft.util.Util
+import pilotofsomething.easyrpg.EVALEX_CONFIG
 import pilotofsomething.easyrpg.EasyRpgAttributes
 import pilotofsomething.easyrpg.LevelFormula
 import pilotofsomething.easyrpg.config
@@ -95,7 +96,7 @@ class RpgMob(private val entity: LivingEntity) : IRpgMob {
 
 		for (rule in rules) {
 			if (entity.y.toInt() in rule.minY until rule.maxY) {
-				return Expression(rule.formula).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
+				return Expression(rule.formula, EVALEX_CONFIG).with("distance", dist).and("time", wTime).and("level", level).evaluate().numberValue.toInt()
 			}
 		}
 
