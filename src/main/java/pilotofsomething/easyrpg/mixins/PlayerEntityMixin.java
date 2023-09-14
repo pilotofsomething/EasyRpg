@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pilotofsomething.easyrpg.components.IRpgPlayer;
-import pilotofsomething.easyrpg.components.RpgPlayer;
 import pilotofsomething.easyrpg.components.RpgPlayerKt;
 
 @Mixin(PlayerEntity.class)

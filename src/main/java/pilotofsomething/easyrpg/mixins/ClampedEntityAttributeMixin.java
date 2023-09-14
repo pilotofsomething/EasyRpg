@@ -1,16 +1,13 @@
 package pilotofsomething.easyrpg.mixins;
 
 import net.minecraft.entity.attribute.ClampedEntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import pilotofsomething.easyrpg.EasyRpgAttributes;
 import pilotofsomething.easyrpg.EasyRpgKt;
 
 @Mixin(ClampedEntityAttribute.class)

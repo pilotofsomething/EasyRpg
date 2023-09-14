@@ -1,28 +1,16 @@
 package pilotofsomething.easyrpg.mixins;
 
-import com.ezylang.evalex.EvaluationException;
-import com.ezylang.evalex.Expression;
-import com.ezylang.evalex.parser.ParseException;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pilotofsomething.easyrpg.EasyRpgAttributes;
-import pilotofsomething.easyrpg.EasyRpgKt;
-import pilotofsomething.easyrpg.components.IRpgEntity;
-import pilotofsomething.easyrpg.ConfigKt;
-import pilotofsomething.easyrpg.components.RpgMobKt;
-import pilotofsomething.easyrpg.components.RpgPlayerKt;
 import pilotofsomething.easyrpg.entity.LivingEntityKt;
-
-import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {

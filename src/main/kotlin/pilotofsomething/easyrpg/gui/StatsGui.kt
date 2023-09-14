@@ -16,7 +16,6 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.InputUtil
 import net.minecraft.text.Text
-import net.minecraft.util.math.MathHelper
 import pilotofsomething.easyrpg.ADD_STAT_ID
 import pilotofsomething.easyrpg.components.IRpgPlayer
 import pilotofsomething.easyrpg.components.RPG_PLAYER
