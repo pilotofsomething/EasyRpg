@@ -9,7 +9,6 @@
 	"AbsorptionStatusEffectMixin",
 	"ClampedEntityAttributeMixin",
 	"HungerManagerMixin",
-	"ItemStackMixin",
 	"LivingEntityInvoker",
 	"LivingEntityMixin",
 	"PlayerEntityMixin",
