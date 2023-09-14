@@ -166,8 +166,3 @@ fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {
 		else -> null
 	}
 }
-
-fun getDamagePowScaling(type: String): HashMap<String, Double> {
-	if(!config.damageTypeScaling.containsKey(type)) println("Unknown damage type: $type, using defaults.")
-	return config.damageTypeScaling[type] ?: config.damageTypeScaling["default"]!!
-}
