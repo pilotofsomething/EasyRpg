@@ -21,6 +21,7 @@ fun getDamagePowScaling(type: String): HashMap<String, Double> {
 	if(!config.damageTypeScaling.containsKey(type)) println("Unknown damage type: $type, using defaults.")
 	return config.damageTypeScaling[type] ?: config.damageTypeScaling["default"]!!
 }
+
 fun calculateDamage(entity: LivingEntity, amount: Float, source: DamageSource): Float {
 	val attacker = source.attacker
 	if (attacker is LivingEntity) {

@@ -29,7 +29,6 @@ import pilotofsomething.easyrpg.config
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
-import kotlin.math.pow
 
 val RPG_PLAYER: ComponentKey<IRpgPlayer> =
 	ComponentRegistry.getOrCreate(Identifier("easy_rpg", "player"), IRpgPlayer::class.java)
@@ -104,45 +103,45 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 		get() = (level * config.players.spGain).toInt() - (spStr + spDex + spInt + spDef + spHealth)
 
 	private val health
-		get() = baseHealth + (spHealth * config.players.healthOptions.spGain).toInt()
+		get() = baseHealth + (spHealth * config.players.health.spGain).toInt()
 
 	private val strength
-		get() = baseStr + (spStr * config.players.strengthOptions.spGain).toInt()
+		get() = baseStr + (spStr * config.players.strength.spGain).toInt()
 
 	private val dexterity
-		get() = baseDex + (spDex * config.players.dexterityOptions.spGain).toInt()
+		get() = baseDex + (spDex * config.players.dexterity.spGain).toInt()
 
 	private val intelligence
-		get() = baseInt + (spInt * config.players.intelligenceOptions.spGain).toInt()
+		get() = baseInt + (spInt * config.players.intelligence.spGain).toInt()
 
 	private val defense
-		get() = baseDef + (spDef * config.players.defenseOptions.spGain).toInt()
+		get() = baseDef + (spDef * config.players.defense.spGain).toInt()
 
 	private val healthMult
-		get() = config.players.healthOptions.multGain * (level - 1) + config.players.healthOptions.multiSpGain * spHealth
+		get() = config.players.health.multGain * (level - 1) + config.players.health.multiSpGain * spHealth
 
 	private val strMult
-		get() = config.players.strengthOptions.multGain * (level - 1) + config.players.strengthOptions.multiSpGain * spStr
+		get() = config.players.strength.multGain * (level - 1) + config.players.strength.multiSpGain * spStr
 
 	private val dexMult
-		get() = config.players.dexterityOptions.multGain * (level - 1) + config.players.dexterityOptions.multiSpGain * spDex
+		get() = config.players.dexterity.multGain * (level - 1) + config.players.dexterity.multiSpGain * spDex
 
 	private val intMult
-		get() = config.players.intelligenceOptions.multGain * (level - 1) + config.players.intelligenceOptions.multiSpGain * spInt
+		get() = config.players.intelligence.multGain * (level - 1) + config.players.intelligence.multiSpGain * spInt
 
 	private val defMult
-		get() = config.players.defenseOptions.multGain * (level - 1) + config.players.defenseOptions.multiSpGain * spDef
+		get() = config.players.defense.multGain * (level - 1) + config.players.defense.multiSpGain * spDef
 
 	private val baseHealth
-		get() = config.players.healthOptions.base + (config.players.healthOptions.gain * (level - 1)).toInt()
+		get() = config.players.health.base + (config.players.health.gain * (level - 1)).toInt()
 	private val baseStr
-		get() = config.players.strengthOptions.base + (config.players.strengthOptions.gain * (level - 1)).toInt()
+		get() = config.players.strength.base + (config.players.strength.gain * (level - 1)).toInt()
 	private val baseDex
-		get() = config.players.dexterityOptions.base + (config.players.dexterityOptions.gain * (level - 1)).toInt()
+		get() = config.players.dexterity.base + (config.players.dexterity.gain * (level - 1)).toInt()
 	private val baseInt
-		get() = config.players.intelligenceOptions.base + (config.players.intelligenceOptions.gain * (level - 1)).toInt()
+		get() = config.players.intelligence.base + (config.players.intelligence.gain * (level - 1)).toInt()
 	private val baseDef
-		get() = config.players.defenseOptions.base + (config.players.defenseOptions.gain * (level - 1)).toInt()
+		get() = config.players.defense.base + (config.players.defense.gain * (level - 1)).toInt()
 
 	private var spHealth = 0
 		set(value) {
@@ -170,11 +169,7 @@ class RpgPlayer(private val player: PlayerEntity) : IRpgPlayer {
 
 	private fun expCurve(lvl: Int): Long {
 		return if(lvl > 0) {
-			if(config.players.experience.advancedExpCurve.isBlank()) {
-				(config.players.experience.base * lvl.toDouble().pow(config.players.experience.exponent)).toLong()
-			} else {
-				Expression(config.players.experience.advancedExpCurve, EVALEX_CONFIG).with("level", lvl).evaluate().numberValue.toLong()
-			}
+			Expression(config.players.experience.expCurve, EVALEX_CONFIG).with("level", lvl).evaluate().numberValue.toLong()
 		} else 0
 	}
 

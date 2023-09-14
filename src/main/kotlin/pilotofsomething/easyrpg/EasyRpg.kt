@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg
 
+import com.ezylang.evalex.Expression
 import com.ezylang.evalex.config.ExpressionConfiguration
 import draylar.omegaconfig.OmegaConfig
 import net.fabricmc.api.ClientModInitializer
@@ -35,7 +36,6 @@ import pilotofsomething.easyrpg.mixins.LivingEntityInvoker
 import java.math.MathContext
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.pow
 
 val ADD_STAT_ID = Identifier("easy_rpg", "change_stat")
 val SYNC_OTHER_PLAYER = Identifier("easy_rpg", "sync_other")
@@ -122,37 +122,28 @@ fun calculateExpValue(entity: PlayerEntity?, killedEntity: LivingEntity): Long {
 	val pRpg = RPG_PLAYER.get(entity)
 	val mRpg = RPG_MOB.get(killedEntity)
 
-	val base = config.entities.expOptions.baseValue * mRpg.level.toDouble()
-		.pow(config.entities.expOptions.exponent)
+	val mobID = Registries.ENTITY_TYPE.getId(killedEntity.type).toString()
 
 	val baseHealth =
 		killedEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)?.baseValue ?: 0.0
 	val attack = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)?.value ?: 0.0
 	val armor = killedEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)?.value ?: 0.0
+	val vExp = (killedEntity as LivingEntityInvoker).invokeGetXpToDrop()
 
-	val mobID = Registries.ENTITY_TYPE.getId(killedEntity.type).toString()
-	val worth = if (config.entities.expOptions.mobModifiers.mobValueOverrides.containsKey(mobID)) {
-		config.entities.expOptions.mobModifiers.mobValueOverrides[mobID]!!
-	} else if(config.entities.expOptions.mobModifiers.useVanillaExpValue) {
-		(killedEntity as LivingEntityInvoker).invokeGetXpToDrop().toDouble()
-	} else (baseHealth / config.entities.expOptions.mobModifiers.health.base * config.entities.expOptions.mobModifiers.health.value) +
-			(attack / config.entities.expOptions.mobModifiers.attack.base * config.entities.expOptions.mobModifiers.attack.value) +
-			(armor / config.entities.expOptions.mobModifiers.armor.base * config.entities.expOptions.mobModifiers.armor.value)
+	val exp = Expression(config.entities.experience.expFormula, EVALEX_CONFIG)
+		.with("hasValue", config.entities.experience.mobValues.containsKey(mobID))
+		.and("value", config.entities.experience.mobValues[mobID] ?: 1)
+		.and("health", baseHealth)
+		.and("attack", attack)
+		.and("armor", armor)
+		.and("level", mRpg.level)
+		.and("vexp", vExp).evaluate().numberValue.toDouble()
 
-	val scaleFactor = min(
-		max(
-			(1 + config.entities.expOptions.scalingSettings.scalingAmount * (mRpg.level - pRpg.level)) * if (mRpg.level - pRpg.level > 0) {
-				config.entities.expOptions.scalingSettings.exponentialIncreaseAmount.pow(
-					mRpg.level - pRpg.level
-				)
-			} else config.entities.expOptions.scalingSettings.exponentialDecreaseAmount.pow(
-				mRpg.level - pRpg.level
-			),
-			config.entities.expOptions.scalingSettings.scalingMin
-		),
-		config.entities.expOptions.scalingSettings.scalingMax
-	)
-	return min(max((base * worth * scaleFactor).toLong(), 1), config.entities.expOptions.scalingSettings.expCap)
+	val scaleFactor = Expression(config.entities.experience.scalingFormula, EVALEX_CONFIG)
+		.with("plevel", pRpg.level)
+		.and("elevel", mRpg.level).evaluate().numberValue.toDouble()
+
+	return min(max((exp * scaleFactor).toLong(), 1), config.entities.experience.expCap)
 }
 
 fun getAttributeMax(attribute: ClampedEntityAttribute): Double? {

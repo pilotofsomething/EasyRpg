@@ -1,5 +1,6 @@
 package pilotofsomething.easyrpg
 
+import draylar.omegaconfig.api.Comment
 import draylar.omegaconfig.api.Config
 import draylar.omegaconfig.api.Syncing
 
@@ -19,6 +20,11 @@ class ModConfig : Config {
 
 	var damageTypeScaling = defaultDamageScaling()
 
+	@Comment(""" The damage formula.
+ The following variables are available:
+     attack - The base damage of the attack
+     power - The power of the attack based on the attacker's strength, dexterity and intelligence stats
+     defense - The defender's defense stat multiplied by the attack's defense modifier""")
 	var damageFormula = "attack * power / defense"
 
 	class ClientOptions {
@@ -37,6 +43,12 @@ class ModConfig : Config {
 	}
 
 	class EntitiesOptions {
+		@Comment(""" The list of formulas for each dimension that control the level of mobs
+ The following variables are available:
+     distance - The distance from the origin of the world
+     time - The number of ticks the player has been online for
+     level - The level of the player
+ time and level are weighted based on distance if multiple players are nearby when the mob spawns""")
 		var levelFormula = defaultLevelFormula()
 
 		var maxLevel: Int = 999
@@ -48,7 +60,7 @@ class ModConfig : Config {
 		var healScalingRatio = 0.5
 
 		@Syncing
-		var expOptions = ExpOptions()
+		var experience = ExpOptions()
 
 		var damage = StatOptionsNoSp(1.0, 0.2, 0.0)
 
@@ -56,67 +68,46 @@ class ModConfig : Config {
 
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
+		var health = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var strength = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var dexterity = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var intelligence = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var defense = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		class ExpOptions {
 			@Syncing
-			var baseValue = 125L
+			@Comment(""" The formula used to calculate the base exp value of a mob.
+ The following variables are available:
+     hasValue - true if the mob has a value defined in 'mobValues'
+     value - The value from 'mobValues' or 1
+     health - The base max health of the mob
+     attack - The attack damage of the mob, including equipment
+     armor - The armor of the mob, including equipment
+     level - The level of the mob
+     vexp - The amount of vanilla exp dropped by the mob""")
+			var expFormula = "IF(hasValue, value, (0.25 * health / 20) + (0.75 * attack / 3) + (0.5 * armor / 10)) * 125 * level^1.2"
 
 			@Syncing
-			var exponent = 1.2
+			@Comment(""" The formula used to scale the exp value of a mob
+ The following variables are available:
+     plevel - The level of the player
+	 elevel - The level of the mob""")
+			var scalingFormula = "MIN(MAX(1 + (elevel - plevel) * 0.1, 0.1), 3)"
 
 			@Syncing
-			var mobModifiers = MobValueOptions()
+			@Comment(" The maximum amount of exp a mob can give")
+			var expCap = Long.MAX_VALUE
 
 			@Syncing
-			var scalingSettings = ScalingSettings()
-
-			class MobValueOptions {
-
-				@Syncing
-				var useVanillaExpValue = false
-
-				@Syncing
-				var health = ValueOption(20.0, 0.25)
-
-				@Syncing
-				var attack = ValueOption(3.0, 0.75)
-
-				@Syncing
-				var armor = ValueOption(10.0, 0.5)
-
-				@Syncing
-				var mobValueOverrides = hashMapOf(
-					"minecraft:ender_dragon" to 50.0,
-					"minecraft:wither" to 80.0,
-					"minecraft:creeper" to 1.2
-				)
-
-				class ValueOption(@Syncing var base: Double, @Syncing var value: Double)
-			}
-
-			class ScalingSettings {
-				@Syncing
-				var scalingAmount = 0.1
-				@Syncing
-				var exponentialIncreaseAmount = 1.0
-				@Syncing
-				var exponentialDecreaseAmount = 1.0
-				@Syncing
-				var scalingMax = 3.0
-				@Syncing
-				var scalingMin = 0.1
-				@Syncing
-				var expCap = Long.MAX_VALUE
-			}
+			var mobValues = hashMapOf(
+				"minecraft:ender_dragon" to 50.0,
+				"minecraft:wither" to 80.0,
+				"minecraft:creeper" to 1.2
+			)
 		}
 	}
 
@@ -139,26 +130,27 @@ class ModConfig : Config {
 
 		var toughness = StatOptionsNoSp(1.0, 1.8, 0.0)
 
-		var healthOptions = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
+		var health = StatOptions(20, 4.0, 2.0, 0.0, 0.0)
 
-		var strengthOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var strength = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var dexterityOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var dexterity = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var intelligenceOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var intelligence = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
-		var defenseOptions = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
+		var defense = StatOptions(10, 2.0, 1.0, 0.0, 0.0)
 
 		class ExperienceOptions {
 			@Syncing
-			var base = 1000.0
-			@Syncing
-			var exponent = 2.4
+			@Comment(""" The formula for the exp curve
+ The only variable is level, the player's level""")
+			var expCurve = "1000 * level^2.4"
+
 			@Syncing
 			var levelOffset = 0
+
 			@Syncing
-			var advancedExpCurve = ""
-			@Syncing
+			@Comment(""" If true then instead of killed mobs giving exp, picking up xp orbs will give exp""")
 			var useVanillaExp = false
 		}
 	}
@@ -171,6 +163,10 @@ class ModConfig : Config {
 
 	override fun getName(): String {
 		return "easyrpg"
+	}
+
+	override fun getExtension(): String {
+		return "json5"
 	}
 }
 
